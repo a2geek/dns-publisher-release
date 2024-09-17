@@ -1,16 +1,18 @@
 package main
 
 import (
+	"dns-publisher/publisher"
 	"flag"
-	"fmt"
+	"net"
 	"os"
+	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
 var (
 	configPathOpt = flag.String("configPath", "config.json", "Path to configuration file")
-	logLevelOpt   = flag.String("logLevel", "WARN", "Set log level (NONE, ERROR, WARN, INFO, DEBUG)")
+	logLevelOpt   = flag.String("logLevel", "INFO", "Set log level (NONE, ERROR, WARN, INFO, DEBUG)")
 )
 
 func main() {
@@ -28,10 +30,11 @@ func main() {
 		logger.Error("main", "Loading config %s", err.Error())
 		os.Exit(1)
 	}
+	logger.Info("main", "Configuration loaded")
 
-	// ticker := time.Tick(config.duration)
+	ticker := time.Tick(config.duration)
 
-	publisher, err := NewPublisher(config.Publish)
+	publisher, err := publisher.NewPublisher(config.Publish)
 	if err != nil {
 		logger.Error("main", "Determining publisher - %s", err.Error())
 		os.Exit(1)
@@ -42,10 +45,18 @@ func main() {
 		logger.Error("main", "Retrieving current configuration - %s", err.Error())
 		os.Exit(1)
 	}
+	logger.Info("main", "Statup state includes %d entries.\n", len(data))
 
-	fmt.Printf("data=%v\n", data)
-
-	// for range ticker {
-	// 	// check and refresh
-	// }
+	for range ticker {
+		// check and refresh
+		logger.Info("main", "Updating from DNS")
+		for query, _ := range config.DNS.ByQuery {
+			ips, err := net.LookupIP(query)
+			if err != nil {
+				logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
+				continue
+			}
+			logger.Debug("main", "found '%s' is %v", query, ips)
+		}
+	}
 }

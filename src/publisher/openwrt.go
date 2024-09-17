@@ -1,4 +1,4 @@
-package main
+package publisher
 
 import (
 	"bufio"
@@ -43,7 +43,7 @@ func NewOpenWrtPublisher(config map[string]string) (Publisher, error) {
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	return openwrtPublisher{
+	return &openwrtPublisher{
 		clientConfig: clientConfig,
 		hostAndPort:  host,
 	}, nil
@@ -54,7 +54,7 @@ type openwrtPublisher struct {
 	hostAndPort  string
 }
 
-func (p openwrtPublisher) Current() (map[string][]net.IP, error) {
+func (p *openwrtPublisher) Current() (map[string][]net.IP, error) {
 	conn, err := ssh.Dial("tcp", p.hostAndPort, &p.clientConfig)
 	if err != nil {
 		return nil, err

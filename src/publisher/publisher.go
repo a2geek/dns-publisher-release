@@ -1,4 +1,4 @@
-package main
+package publisher
 
 import (
 	"errors"
@@ -19,6 +19,8 @@ func NewPublisher(config map[string]string) (Publisher, error) {
 	switch pubType {
 	case "openwrt":
 		return NewOpenWrtPublisher(config)
+	case "fake":
+		return NewFakePublisher(config)
 	default:
 		return nil, fmt.Errorf("unsupported publisher type: %s", pubType)
 	}

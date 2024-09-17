@@ -8,10 +8,12 @@ import (
 )
 
 type Config struct {
-	Refresh  string
+	Refresh   string
+	Ownership []string
+	DNS       DNSConfig
+	Publish   map[string]string
+
 	duration time.Duration
-	DNS      DNSConfig
-	Publish  map[string]string
 }
 
 type DNSConfig struct {
