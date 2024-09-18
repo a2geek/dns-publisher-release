@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dns-publisher/filter"
 	"encoding/json"
 	"errors"
 	"os"
@@ -8,10 +9,10 @@ import (
 )
 
 type Config struct {
-	Refresh   string
-	Ownership []string
-	DNS       DNSConfig
-	Publish   map[string]string
+	Refresh string
+	Filters filter.IPFilters
+	DNS     DNSConfig
+	Publish map[string]string
 
 	duration time.Duration
 }
@@ -45,6 +46,11 @@ func (c *Config) Validate() error {
 			return err
 		}
 		c.duration = duration
+	}
+
+	err := c.Filters.Validate()
+	if err != nil {
+		return err
 	}
 
 	if len(c.DNS.ByQuery) == 0 {
