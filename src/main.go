@@ -1,7 +1,6 @@
 package main
 
 import (
-	"dns-publisher/filter"
 	"dns-publisher/publishers"
 	"flag"
 	"maps"
@@ -39,7 +38,6 @@ func main() {
 	}
 	logger.Info("main", "Configuration loaded")
 
-	filters := config.Filters.GetFilters()
 	ticker := time.Tick(config.duration)
 
 	publisher, err = publishers.NewPublisher(config.Publish, logger, *dryRunOpt)
@@ -53,7 +51,6 @@ func main() {
 		logger.Error("main", "Retrieving current configuration - %s", err.Error())
 		os.Exit(1)
 	}
-	applyFilters(state, filters)
 	logger.Info("main", "Startup state includes %d entries: %v\n", len(state), maps.Keys(state))
 
 	for range ticker {
@@ -81,30 +78,6 @@ func main() {
 					logger.Error("main", "error adjusting state for '%s': %v", host, err)
 				}
 			}
-		}
-	}
-}
-
-// TODO is this needed? Delete is by HOST, add replaces HOST with _current_ set of IPs. Should not impact anything else???
-func applyFilters(data map[string][]net.IP, filters []filter.IPFilter) {
-	for host, ipaddrs := range data {
-		var newaddrs []net.IP
-		// rebuild the IP addr list
-		for _, ipaddr := range ipaddrs {
-			good := false
-			for _, filter := range filters {
-				good = good || filter(ipaddr)
-			}
-			if good {
-				newaddrs = append(newaddrs, ipaddr)
-			}
-		}
-		// handle map, depending on how many passed the filter
-		if len(newaddrs) == 0 {
-			delete(data, host)
-			logger.Debug("Removing host '%s' from list as it did not pass filters", host)
-		} else {
-			data[host] = newaddrs
 		}
 	}
 }
