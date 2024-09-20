@@ -3,10 +3,10 @@ package main
 import (
 	"dns-publisher/publishers"
 	"flag"
-	"maps"
 	"net"
 	"os"
 	"reflect"
+	"strings"
 	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
@@ -51,7 +51,7 @@ func main() {
 		logger.Error("main", "Retrieving current configuration - %s", err.Error())
 		os.Exit(1)
 	}
-	logger.Info("main", "Startup state includes %d entries: %v\n", len(state), maps.Keys(state))
+	logger.Info("main", "Startup state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 
 	for range ticker {
 		// check and refresh
@@ -62,7 +62,7 @@ func main() {
 			logger.Error("main", "Retrieving current configuration - %s", err.Error())
 			os.Exit(1)
 		}
-		logger.Info("main", "Current state includes %d entries: %v\n", len(state), maps.Keys(state))
+		logger.Info("main", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 
 		for query, hosts := range config.DNS.ByQuery {
 			ips, err := net.LookupIP(query)
@@ -97,4 +97,15 @@ func adjustState(state map[string][]net.IP, host string, newIPs []net.IP) error 
 	}
 	state[host] = newIPs
 	return err
+}
+
+func hostKeysAsString(state map[string][]net.IP) string {
+	var builder strings.Builder
+	for key := range state {
+		if builder.Len() > 0 {
+			builder.WriteString(",")
+		}
+		builder.WriteString(key)
+	}
+	return builder.String()
 }
