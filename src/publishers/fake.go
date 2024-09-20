@@ -1,4 +1,4 @@
-package publisher
+package publishers
 
 import (
 	"fmt"
@@ -36,4 +36,14 @@ type FakePublisher struct {
 
 func (p *FakePublisher) Current() (map[string][]net.IP, error) {
 	return p.data, nil
+}
+
+func (p *FakePublisher) Add(host string, ips []net.IP) error {
+	p.data[host] = ips
+	return nil
+}
+
+func (p *FakePublisher) Delete(host string) error {
+	delete(p.data, host)
+	return nil
 }

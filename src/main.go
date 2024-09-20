@@ -2,10 +2,12 @@ package main
 
 import (
 	"dns-publisher/filter"
-	"dns-publisher/publisher"
+	"dns-publisher/publishers"
 	"flag"
+	"maps"
 	"net"
 	"os"
+	"reflect"
 	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
@@ -14,8 +16,10 @@ import (
 var (
 	configPathOpt = flag.String("configPath", "config.json", "Path to configuration file")
 	logLevelOpt   = flag.String("logLevel", "INFO", "Set log level (NONE, ERROR, WARN, INFO, DEBUG)")
+	dryRunOpt     = flag.Bool("dryRun", false, "Disallow any change operations")
 
-	logger boshlog.Logger
+	logger    boshlog.Logger
+	publisher publishers.Publisher
 )
 
 func main() {
@@ -38,34 +42,50 @@ func main() {
 	filters := config.Filters.GetFilters()
 	ticker := time.Tick(config.duration)
 
-	publisher, err := publisher.NewPublisher(config.Publish)
+	publisher, err = publishers.NewPublisher(config.Publish, logger, *dryRunOpt)
 	if err != nil {
 		logger.Error("main", "Determining publisher - %s", err.Error())
 		os.Exit(1)
 	}
 
-	data, err := publisher.Current()
+	state, err := publisher.Current()
 	if err != nil {
 		logger.Error("main", "Retrieving current configuration - %s", err.Error())
 		os.Exit(1)
 	}
-	applyFilters(data, filters)
-	logger.Info("main", "Startup state includes %d entries.\n", len(data))
+	applyFilters(state, filters)
+	logger.Info("main", "Startup state includes %d entries: %v\n", len(state), maps.Keys(state))
 
 	for range ticker {
 		// check and refresh
 		logger.Info("main", "Updating from DNS")
-		for query := range config.DNS.ByQuery {
+
+		state, err = publisher.Current()
+		if err != nil {
+			logger.Error("main", "Retrieving current configuration - %s", err.Error())
+			os.Exit(1)
+		}
+		logger.Info("main", "Current state includes %d entries: %v\n", len(state), maps.Keys(state))
+
+		for query, hosts := range config.DNS.ByQuery {
 			ips, err := net.LookupIP(query)
 			if err != nil {
 				logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
+				// TODO likely want a flag to either delete or leave as-is if host exists in state
 				continue
 			}
-			logger.Debug("main", "found '%s' is %v", query, ips)
+			logger.Debug("main", "found '%s' for %v = %v", query, hosts, ips)
+			for _, host := range hosts {
+				err = adjustState(state, host, ips)
+				if err != nil {
+					logger.Error("main", "error adjusting state for '%s': %v", host, err)
+				}
+			}
 		}
 	}
 }
 
+// TODO is this needed? Delete is by HOST, add replaces HOST with _current_ set of IPs. Should not impact anything else???
 func applyFilters(data map[string][]net.IP, filters []filter.IPFilter) {
 	for host, ipaddrs := range data {
 		var newaddrs []net.IP
@@ -87,4 +107,21 @@ func applyFilters(data map[string][]net.IP, filters []filter.IPFilter) {
 			data[host] = newaddrs
 		}
 	}
+}
+
+func adjustState(state map[string][]net.IP, host string, newIPs []net.IP) error {
+	currentIPs, ok := state[host]
+	if ok && !reflect.DeepEqual(currentIPs, newIPs) {
+		err := publisher.Delete(host)
+		if err != nil {
+			return err
+		}
+		delete(state, host)
+	}
+	err := publisher.Add(host, newIPs)
+	if err != nil {
+		return err
+	}
+	state[host] = newIPs
+	return err
 }
