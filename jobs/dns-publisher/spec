@@ -1,0 +1,34 @@
+---
+name: dns-publisher
+
+templates:
+  ctl.erb: bin/ctl
+  config.json.erb: config/config.json
+
+packages:
+- dns-publisher
+
+properties:
+  refresh:
+    description: "Refresh rate for the publisher. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
+    default: "30s"
+
+  publisher.type:
+    description: "Publisher type. Currently supported are: openwrt and fake."
+    default: openwrt
+  publisher.options:
+    description: "Configuration options for publsiher type. Example is for openwrt."
+    example:
+      user: root
+      host: 192.168.1.1
+      private-key:
+        -----BEGIN RSA PRIVATE KEY-----
+        <snip>
+        -----END RSA PRIVATE KEY-----
+
+  dns.by-query:
+    description: "Map of BOSH DNS queries to an array of host names."
+    example:
+      "q-s3.web.*.concourse.bosh": ["concourse.lan"]
+      "q-s3.postgres.*.postgres.bosh": ["postgres.lan"]
+      "q-s3.router.*.cf.bosh": ["sys.cf.lan", "app.cf.lan"]

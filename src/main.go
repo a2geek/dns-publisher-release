@@ -40,7 +40,7 @@ func main() {
 
 	ticker := time.Tick(config.duration)
 
-	publisher, err = publishers.NewPublisher(config.Publish, logger, *dryRunOpt)
+	publisher, err = publishers.NewPublisher(config.Publisher, logger, *dryRunOpt)
 	if err != nil {
 		logger.Error("main", "Determining publisher - %s", err.Error())
 		os.Exit(1)
@@ -67,9 +67,13 @@ func main() {
 		for query, hosts := range config.DNS.ByQuery {
 			ips, err := net.LookupIP(query)
 			if err != nil {
-				logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
-				// TODO likely want a flag to either delete or leave as-is if host exists in state
-				continue
+				logger.Warn("main", "unable to lookup [1] '%s': %s", query, err.Error())
+				ips, err = net.LookupIP(query)
+				if err != nil {
+					logger.Warn("main", "unable to lookup [2] '%s': %s", query, err.Error())
+					// TODO likely want a flag to either delete or leave as-is if host exists in state
+					continue
+				}
 			}
 			logger.Debug("main", "found '%s' for %v = %v", query, hosts, ips)
 			for _, host := range hosts {

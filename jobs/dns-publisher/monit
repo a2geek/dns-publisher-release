@@ -1,0 +1,5 @@
+check process dns-publisher
+  with pidfile /var/vcap/sys/run/dns-publisher/dns-publisher.pid
+  start program "/var/vcap/jobs/dns-publisher/bin/ctl start"
+  stop program "/var/vcap/jobs/dns-publisher/bin/ctl stop"
+  group vcap

@@ -1,0 +1,42 @@
+---
+name: dns-publisher
+
+releases:
+- name: dns-publisher
+  version: latest
+
+instance_groups:
+- name: dns-publisher
+  instances: 1
+  azs: [z1, z2, z3]
+  networks: [{name: default}]
+  vm_type: default
+  stemcell: default
+  jobs:
+  - name: dns-publisher
+    release: dns-publisher
+    properties:
+      refresh: 30s
+      publisher:
+        type: openwrt
+        options:
+          user: root
+          host: 192.168.1.1
+          private-key: ((openwrt.private_key))
+      dns:
+        by-query:
+          "q-s3.web.*.concourse.bosh": ["concourse.lan"]
+          "q-s3.postgres.*.postgres.bosh": ["postgres.lan"]
+          "q-s3.router.*.cf.bosh": ["sys.cf.lan", "app.cf.lan"]
+
+stemcells:
+- alias: default
+  os: ubuntu-jammy
+  version: latest
+
+update:
+  canaries: 1
+  canary_watch_time: 10000-600000
+  max_in_flight: 1
+  update_watch_time: 10000-600000
+  serial: false

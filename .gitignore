@@ -15,3 +15,4 @@ releases/**/*.tgz
 src/sample.yml
 src/config.json
 src/dns-publisher
+dns-publisher-release.tgz

@@ -8,9 +8,9 @@ import (
 )
 
 type Config struct {
-	Refresh string
-	DNS     DNSConfig
-	Publish map[string]string
+	Refresh   string
+	DNS       DNSConfig
+	Publisher map[string]string
 
 	duration time.Duration
 }
@@ -49,10 +49,10 @@ func (c *Config) Validate() error {
 	if len(c.DNS.ByQuery) == 0 {
 		return errors.New("expecting dns query configuration")
 	}
-	if len(c.Publish) == 0 {
+	if len(c.Publisher) == 0 {
 		return errors.New("expecting publish destination")
 	}
-	if c.Publish["type"] == "" {
+	if c.Publisher["type"] == "" {
 		return errors.New("type of publisher required")
 	}
 	return nil

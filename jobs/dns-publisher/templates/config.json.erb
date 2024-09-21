@@ -1,0 +1,18 @@
+<%=
+
+config = {
+  "Refresh" => p("refresh"),
+  "Publisher" => {
+    "type" => p("publisher.type")
+  }
+}
+
+config['Publisher'] = p("publisher.options")
+config['Publisher']['type'] = p("publisher.type")
+
+config['DNS'] = {}
+config['DNS']['ByQuery'] = p("dns.by-query")
+
+JSON.dump(config)
+
+%>

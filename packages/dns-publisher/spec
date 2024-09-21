@@ -1,0 +1,8 @@
+---
+name: dns-publisher
+
+dependencies:
+- golang-1.23-linux
+
+files:
+- "**/*"

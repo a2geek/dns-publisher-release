@@ -1,0 +1,12 @@
+set -ex
+
+source /var/vcap/packages/golang-1.23-linux/bosh/compile.env
+
+# Since HOME is not set we must set GOPATH and GOCACHE
+mkdir -p /tmp/go/.cache
+export GOPATH=/tmp/go
+export GOCACHE=${GOPATH}/.cache
+
+mkdir -p $BOSH_INSTALL_TARGET/bin
+
+go build -mod=vendor -o $BOSH_INSTALL_TARGET/bin/dns-publisher .

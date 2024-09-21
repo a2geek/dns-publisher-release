@@ -1,1 +1,6 @@
-name: dns-publisher
+---
+blobstore:
+  provider: local
+  options:
+    blobstore_path: ./blobs
+final_name: dns-publisher
