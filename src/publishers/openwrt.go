@@ -90,6 +90,7 @@ func (p *openwrtPublisher) Current() (map[string][]net.IP, error) {
 			}
 			data[host] = list
 		}
+		p.logger.Debug("openwrt", "host '%s' = %v", host, data[host])
 	}
 
 	return data, nil
@@ -98,9 +99,10 @@ func (p *openwrtPublisher) Current() (map[string][]net.IP, error) {
 func (p *openwrtPublisher) currentEntries() ([]string, error) {
 	output, err := p.outputCommand("uci get dhcp.@dnsmasq[].address")
 	if err != nil {
-		if !strings.Contains(err.Error(), "uci: Entry not found") {
-			return []string{}, err
+		if strings.Contains(output, "uci: Entry not found") {
+			return []string{}, nil
 		}
+		return []string{}, err
 	}
 	line := strings.TrimSpace(string(output))
 	p.logger.Debug("openwrt", "output: %s", line)
@@ -120,6 +122,10 @@ func (p *openwrtPublisher) Add(host string, ips []net.IP) error {
 
 	err := p.runCommand("uci add_list dhcp.@dnsmasq[].address='/%s/%s'", host, builder.String())
 	return err
+}
+
+func (p *openwrtPublisher) Commit() error {
+	return p.runCommand("uci commit")
 }
 
 func (p *openwrtPublisher) Delete(host string) error {
@@ -156,9 +162,10 @@ func (p *openwrtPublisher) runCommand(msg string, args ...interface{}) error {
 		// prevent change commands
 		p.logger.Info("openwrt", "dry-run cmd: %s", cmd)
 		return nil
+	} else {
+		p.logger.Debug("openwrt", "cmd: %s", cmd)
+		return session.Run(cmd)
 	}
-	p.logger.Debug("openwrt", "cmd: %s", cmd)
-	return session.Run(cmd)
 }
 
 func (p *openwrtPublisher) outputCommand(msg string, args ...interface{}) (string, error) {
@@ -176,6 +183,8 @@ func (p *openwrtPublisher) outputCommand(msg string, args ...interface{}) (strin
 	}
 
 	p.logger.Debug("openwrt", "cmd: %s", cmd)
-	bytes, err := session.Output(cmd)
-	return string(bytes), err
+	bytes, err := session.CombinedOutput(cmd)
+	output := string(bytes)
+	p.logger.Debug("openwrt", "output: %s", output)
+	return output, err
 }

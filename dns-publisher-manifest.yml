@@ -16,18 +16,19 @@ instance_groups:
   - name: dns-publisher
     release: dns-publisher
     properties:
-      refresh: 30s
       publisher:
         type: openwrt
+        dry-run: "false"
         options:
           user: root
           host: 192.168.1.1
           private-key: ((openwrt.private_key))
-      dns:
+      source:
+        refresh: 1m
         by-query:
-          "q-s3.web.*.concourse.bosh": ["concourse.lan"]
-          "q-s3.postgres.*.postgres.bosh": ["postgres.lan"]
-          "q-s3.router.*.cf.bosh": ["sys.cf.lan", "app.cf.lan"]
+          "q-s0.web.default.concourse.bosh": ["concourse.lan"]
+          "q-s0.postgres.default.postgres.bosh": ["postgres.lan"]
+          "q-s0.router.default.cf.bosh": ["sys.cf.lan", "app.cf.lan"]
 
 stemcells:
 - alias: default

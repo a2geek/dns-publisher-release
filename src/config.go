@@ -1,22 +1,15 @@
 package main
 
 import (
+	"dns-publisher/sources"
 	"encoding/json"
 	"errors"
 	"os"
-	"time"
 )
 
 type Config struct {
-	Refresh   string
-	DNS       DNSConfig
+	Source    sources.SourceConfig
 	Publisher map[string]string
-
-	duration time.Duration
-}
-
-type DNSConfig struct {
-	ByQuery map[string][]string
 }
 
 func NewConfigFromPath(path string) (Config, error) {
@@ -36,17 +29,7 @@ func NewConfigFromPath(path string) (Config, error) {
 }
 
 func (c *Config) Validate() error {
-	if c.Refresh == "" {
-		c.duration = 10 * time.Second
-	} else {
-		duration, err := time.ParseDuration(c.Refresh)
-		if err != nil {
-			return err
-		}
-		c.duration = duration
-	}
-
-	if len(c.DNS.ByQuery) == 0 {
+	if len(c.Source.ByQuery) == 0 {
 		return errors.New("expecting dns query configuration")
 	}
 	if len(c.Publisher) == 0 {

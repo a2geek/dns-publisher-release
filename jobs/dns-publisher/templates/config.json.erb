@@ -1,17 +1,17 @@
 <%=
 
-config = {
-  "Refresh" => p("refresh"),
-  "Publisher" => {
-    "type" => p("publisher.type")
-  }
-}
+config = {}
 
 config['Publisher'] = p("publisher.options")
-config['Publisher']['type'] = p("publisher.type")
+config['Publisher'].merge!({
+  "type" => p("publisher.type"),
+  "dry-run" => p("publisher.dry-run")
+})
 
-config['DNS'] = {}
-config['DNS']['ByQuery'] = p("dns.by-query")
+config['Source'] = {
+  "Refresh" => p("source.refresh"),
+  "ByQuery" => p("source.by-query")
+}
 
 JSON.dump(config)
 
