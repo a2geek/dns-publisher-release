@@ -1,17 +1,30 @@
 <%=
 
-config = {}
+config = {
+  "Trigger" => {
+    "FileWatcher" => p("trigger.file-watcher"),
+    "Refresh" => p("trigger.refresh")
+  },
+  "Mappings" => [],
+  "Publisher" => p("publisher.options")
+}
 
-config['Publisher'] = p("publisher.options")
 config['Publisher'].merge!({
   "type" => p("publisher.type"),
   "dry-run" => p("publisher.dry-run")
 })
 
-config['Source'] = {
-  "Refresh" => p("source.refresh"),
-  "ByQuery" => p("source.by-query")
-}
+if_p("mappings") do 
+  p("mappings").each do |mapping|
+    config["Mappings"].push({
+      "InstanceGroup" => mapping["instance-group"],
+      "Network" => mapping["network"] || "default",
+      "Deployment" => mapping["deployment"],
+      "TLD" => mapping["tld"] || "bosh",
+      "FQDN" => mapping["fqdn"]
+    })
+  end
+end
 
 JSON.dump(config)
 

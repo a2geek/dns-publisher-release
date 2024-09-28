@@ -9,6 +9,23 @@ packages:
 - dns-publisher
 
 properties:
+  trigger.file-watcher:
+    description: "Trigger a refresh when specified file is updated. This both interrogates/updates the router and BOSH DNS."
+    default: "/var/vcap/instance/dns/records.json"
+  trigger.refresh:
+    description: "Refresh rate for the DNS query. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
+    default: "15m"
+
+  mappings:
+    description: "BOSH DNS mappings to a FQDN"
+    example:
+    - instance-group: concourse
+      deployment: concourse
+      fqdn: concourse.lan
+    - instance-group: router
+      deployment: cf
+      fqdn: alias.cf.lan
+
   publisher.type:
     description: "Publisher type. Currently supported are: openwrt and fake."
     default: openwrt
@@ -24,14 +41,3 @@ properties:
         -----BEGIN RSA PRIVATE KEY-----
         <snip>
         -----END RSA PRIVATE KEY-----
-
-  # Native DNS source. A bit heavy handed since it does it by refresh instead of actual change (impacts router).
-  source.refresh:
-    description: "Refresh rate for the DNS query. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
-    default: "5m"
-  source.by-query:
-    description: "Map of BOSH DNS queries to an array of host names. DO NOT USE WILDCARDS."
-    example:
-      "q-s3.web.default.concourse.bosh": ["concourse.lan"]
-      "q-s3.postgres.default.postgres.bosh": ["postgres.lan"]
-      "q-s3.router.default.cf.bosh": ["sys.cf.lan", "app.cf.lan"]

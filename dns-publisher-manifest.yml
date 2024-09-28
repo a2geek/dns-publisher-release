@@ -16,6 +16,16 @@ instance_groups:
   - name: dns-publisher
     release: dns-publisher
     properties:
+      mappings:
+      - instance-group: concourse
+        deployment: concourse
+        fqdn: concourse.lan
+      - instance-group: postgres
+        deployment: postgres
+        fqdn: postgres.lan
+      - instance-group: router
+        deployment: cf
+        fqdn: alias.cf.lan
       publisher:
         type: openwrt
         dry-run: "false"
@@ -23,12 +33,6 @@ instance_groups:
           user: root
           host: 192.168.1.1
           private-key: ((openwrt.private_key))
-      source:
-        refresh: 1m
-        by-query:
-          "q-s0.web.default.concourse.bosh": ["concourse.lan"]
-          "q-s0.postgres.default.postgres.bosh": ["postgres.lan"]
-          "q-s0.router.default.cf.bosh": ["sys.cf.lan", "app.cf.lan"]
 
 stemcells:
 - alias: default

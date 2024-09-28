@@ -3,6 +3,7 @@ package main
 import (
 	"dns-publisher/publishers"
 	"dns-publisher/sources"
+	"dns-publisher/triggers"
 	"flag"
 	"net"
 	"os"
@@ -14,7 +15,6 @@ var (
 	configPathOpt = flag.String("configPath", "config.json", "Path to configuration file")
 	logLevelOpt   = flag.String("logLevel", "INFO", "Set log level (NONE, ERROR, WARN, INFO, DEBUG)")
 
-	logger    boshlog.Logger
 	publisher publishers.Publisher
 )
 
@@ -26,7 +26,7 @@ func main() {
 		loglevel = boshlog.LevelError
 	}
 
-	logger = boshlog.NewLogger(loglevel)
+	logger := boshlog.NewLogger(loglevel)
 
 	config, err := NewConfigFromPath(*configPathOpt)
 	if err != nil {
@@ -48,13 +48,23 @@ func main() {
 	}
 	logger.Info("main", "Startup state includes %d entries: %v", len(state), hostKeysAsString(state))
 
-	source, err := sources.NewSource(config.Source)
+	source, err := sources.NewSource()
 	if err != nil {
 		logger.Error("main", "Configuring source: %s", err.Error())
 		os.Exit(1)
 	}
 
-	for range source.Start() {
+	trigger, err := triggers.NewTrigger(config.Trigger, logger)
+	if err != nil {
+		logger.Error("main", "Configuring trigger: %s", err.Error())
+	}
+
+	events, err := trigger.Start()
+	if err != nil {
+		logger.Error("main", "Starting event trigger: %s", err.Error())
+	}
+
+	for range events {
 		// check and refresh
 		logger.Info("main", "Updating from DNS")
 
@@ -65,20 +75,19 @@ func main() {
 		}
 		logger.Info("main", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 		changes := false
-		for query, hosts := range config.Source.ByQuery {
+		for _, mapping := range config.Mappings {
+			query := mapping.Query()
 			ips, err := source.Lookup(query)
 			if err != nil {
 				logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
 				continue
 			}
-			logger.Debug("main", "found '%s' for %v = %v", query, hosts, ips)
-			for _, host := range hosts {
-				change, err := adjustState(state, host, ips)
-				if err != nil {
-					logger.Error("main", "error adjusting state for '%s': %v", host, err)
-				}
-				changes = changes || change
+			logger.Debug("main", "found '%s' for %v = %v", query, mapping.FQDN, ips)
+			change, err := adjustState(state, mapping.FQDN, ips)
+			if err != nil {
+				logger.Error("main", "error adjusting state for '%s': %v", mapping.FQDN, err)
 			}
+			changes = changes || change
 		}
 		if changes {
 			err = publisher.Commit()
