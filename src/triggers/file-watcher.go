@@ -29,9 +29,9 @@ func (t *fileWatchTrigger) Start() (<-chan interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer watcher.Close()
 
 	go func() {
+		defer watcher.Close()
 		for {
 			select {
 			case event, ok := <-watcher.Events:
@@ -39,7 +39,7 @@ func (t *fileWatchTrigger) Start() (<-chan interface{}, error) {
 					return
 				}
 				t.logger.Debug("file-watcher", "fswatcher event: %v", event)
-				if event.Has(fsnotify.Write) {
+				if event.Has(fsnotify.Write) || event.Has(fsnotify.Create) || event.Has(fsnotify.Rename) {
 					t.logger.Debug("file-watcher", "modified file:", event.Name)
 					if event.Name == t.fullPath {
 						ch <- fileWatchTick{
