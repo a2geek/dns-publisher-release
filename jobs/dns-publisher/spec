@@ -9,6 +9,9 @@ packages:
 - dns-publisher
 
 properties:
+  trigger.type:
+    description: "Trigger type. Currently supported are file-watcher and timer."
+    default: "file-watcher"
   trigger.file-watcher:
     description: "Trigger a refresh when specified file is updated. This both interrogates/updates the router and BOSH DNS."
     default: "/var/vcap/instance/dns/records.json"

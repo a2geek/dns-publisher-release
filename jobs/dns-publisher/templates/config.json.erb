@@ -2,13 +2,17 @@
 
 config = {
   "Trigger" => {
+    "Type" => p("trigger.type"),
     "FileWatcher" => p("trigger.file-watcher"),
     "Refresh" => p("trigger.refresh")
   },
   "Mappings" => [],
-  "Publisher" => p("publisher.options")
+  "Publisher" => {}
 }
 
+if_p('publisher.options') do
+  config['Publisher'] = p("publisher.options")
+end
 config['Publisher'].merge!({
   "type" => p("publisher.type"),
   "dry-run" => p("publisher.dry-run")

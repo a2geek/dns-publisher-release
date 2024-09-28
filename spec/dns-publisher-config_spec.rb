@@ -9,6 +9,38 @@ describe 'dns-publisher job' do
   describe 'config.json' do
     let(:template) { job.template('config/config.json') }
 
+    it 'assigns trigger defaults' do
+      config = JSON.parse(template.render({
+        # all defaults
+      }))
+
+      expect(config['Trigger']['Type']).to eq("file-watcher")
+      expect(config['Trigger']['FileWatcher']).to eq("/var/vcap/instance/dns/records.json")
+    end
+
+    it 'allows file-watcher trigger overrides' do
+      config = JSON.parse(template.render({
+        "trigger" => {
+          "file-watcher" => "/tmp/file.json"
+        }
+      }))
+
+      expect(config['Trigger']['Type']).to eq("file-watcher")
+      expect(config['Trigger']['FileWatcher']).to eq("/tmp/file.json")
+    end
+
+    it 'allows timer trigger selection' do
+      config = JSON.parse(template.render({
+        "trigger" => {
+          "type" => "timer",
+          "refresh" => "30s"
+        }
+      }))
+
+      expect(config['Trigger']['Type']).to eq("timer")
+      expect(config['Trigger']['Refresh']).to eq("30s")
+    end
+
     it 'assigns mappings defaults' do
       config = JSON.parse(template.render({
           "mappings" => [
@@ -17,12 +49,7 @@ describe 'dns-publisher job' do
               "deployment" => "concourse",
               "fqdn" => "concourse.lan"
             }
-          ],
-          "publisher" => {
-            "options" => {
-              "user" => "root"
-            }
-          }
+          ]
         }))
 
         expect(config["Mappings"][0]["Network"]).to eq("default")
@@ -39,12 +66,7 @@ describe 'dns-publisher job' do
               "tld" => "my-tld",
               "fqdn" => "concourse.lan"
             }
-          ],
-          "publisher" => {
-            "options" => {
-              "user" => "root"
-            }
-          }
+          ]
         }))
 
         expect(config["Mappings"][0]["Network"]).to eq("my-network")
