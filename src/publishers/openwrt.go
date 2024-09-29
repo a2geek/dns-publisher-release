@@ -1,9 +1,11 @@
 package publishers
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"net"
+	"regexp"
 	"strings"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
@@ -55,92 +57,129 @@ type openwrtPublisher struct {
 	hostAndPort  string
 	logger       boshlog.Logger
 	dryRun       bool
+	entries      []entry
+}
+type entry struct {
+	section, name string
+	ip            net.IP
+}
+
+func (p *openwrtPublisher) appendEntry(section, name string, ip net.IP) {
+	if section != "" && name != "" && ip != nil {
+		p.entries = append(p.entries, entry{
+			section: section,
+			name:    name,
+			ip:      ip,
+		})
+	}
 }
 
 func (p *openwrtPublisher) Current() (map[string][]net.IP, error) {
-	entries, err := p.currentEntries()
+	// Expected format:
+	//   dhcp.cfg08f37d=domain
+	//   dhcp.cfg08f37d.name='fake.lan'
+	//   dhcp.cfg08f37d.ip='3.4.5.6'
+	//   dhcp.cfg09f37d=domain
+	//   dhcp.cfg09f37d.name='fake.lan'
+	//   dhcp.cfg09f37d.ip='4.5.6.7'
+	output, err := p.outputCommand("uci -X show dhcp")
 	if err != nil {
 		return nil, err
 	}
 
-	// Format:  /.sys.cf.lan/ip-addr /.app.cf.lan/ip-addr
-	data := make(map[string][]net.IP)
-	for _, entry := range entries {
-		parts := strings.Split(entry, "/")
-		if len(parts) != 3 {
-			return nil, fmt.Errorf("unexpected format in output: %s", entry)
-		}
-		host := parts[1]
+	domain := regexp.MustCompile(`^dhcp\.(cfg\w+)(\.\w+)?='?([^']*)'?$`)
 
-		ips := strings.Split(parts[2], ",")
-		if len(ips) == 0 {
-			return nil, fmt.Errorf("no IP addresses found for host %s", host)
+	var section, name string
+	var ip net.IP
+	scanner := bufio.NewScanner(strings.NewReader(output))
+	p.entries = []entry{}
+	for scanner.Scan() {
+		// 0 = full matching text
+		// 1 = section id (ex: cfg09f37d)
+		// 2 = option name ('.ip' or '.name')
+		// 3 = option value, without quotes
+		values := domain.FindStringSubmatch(scanner.Text())
+		if values == nil || len(values) != 4 {
+			// not the format of our line, just other dhcp entries we can safely ignore
+			continue
 		}
 
-		for _, ip := range ips {
-			ipAddr := net.ParseIP(ip)
-			if ipAddr == nil {
-				return nil, fmt.Errorf("unexpected IP format for host %s with '%s'", host, ip)
+		switch values[2] {
+		case ".ip":
+			ip = net.ParseIP(values[3])
+			if ip == nil {
+				p.logger.Warn("openwrt", "expecting IP but got '%s'", values[3])
 			}
-			list, ok := data[host]
-			if ok {
-				list = append(list, ipAddr)
+		case ".name":
+			name = values[3]
+		case "": // anything else is a section heading (both for 'domain' and everything else as well)
+			if values[3] == "domain" {
+				p.appendEntry(section, name, ip)
+				section = values[1]
 			} else {
-				list = []net.IP{ipAddr}
+				p.logger.Debug("openwrt", "ignoring section '%s'", values[3])
 			}
-			data[host] = list
+			name = ""
+			ip = nil
 		}
-		p.logger.Debug("openwrt", "host '%s' = %v", host, data[host])
 	}
+	p.appendEntry(section, name, ip)
+	p.logger.Debug("openwrt", "entries found: %v", p.entries)
 
+	data := make(map[string][]net.IP)
+	for _, e := range p.entries {
+		ips, ok := data[e.name]
+		if !ok {
+			ips = []net.IP{e.ip}
+		} else {
+			ips = append(ips, e.ip)
+		}
+		data[e.name] = ips
+	}
+	p.logger.Debug("openwrt", "domains found: %v", data)
 	return data, nil
 }
 
-func (p *openwrtPublisher) currentEntries() ([]string, error) {
-	output, err := p.outputCommand("uci get dhcp.@dnsmasq[].address")
-	if err != nil {
-		if strings.Contains(output, "uci: Entry not found") {
-			return []string{}, nil
-		}
-		return []string{}, err
-	}
-	line := strings.TrimSpace(string(output))
-	p.logger.Debug("openwrt", "output: %s", line)
-
-	// Format:  /.sys.cf.lan/ip-addr /.app.cf.lan/ip-addr
-	return strings.Split(line, " "), nil
-}
-
 func (p *openwrtPublisher) Add(host string, ips []net.IP) error {
-	var builder strings.Builder
 	for _, ip := range ips {
-		if builder.Len() > 0 {
-			builder.WriteString(",")
+		section, err := p.outputCommand("uci add dhcp domain")
+		if err != nil {
+			return err
 		}
-		builder.WriteString(ip.String())
-	}
+		section = strings.TrimSpace(section)
 
-	err := p.runCommand("uci add_list dhcp.@dnsmasq[].address='/%s/%s'", host, builder.String())
-	return err
+		err = p.runCommand("uci set dhcp.%s.name='%s'; uci set dhcp.%s.ip='%s'", section, host, section, ip.String())
+		if err != nil {
+			return err
+		}
+
+		p.appendEntry(section, host, ip)
+	}
+	return nil
 }
 
 func (p *openwrtPublisher) Commit() error {
-	return p.runCommand("uci commit")
+	p.entries = []entry{}
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
 }
 
 func (p *openwrtPublisher) Delete(host string) error {
-	entries, err := p.currentEntries()
-	if err != nil {
-		return err
-	}
-
-	prefix := fmt.Sprintf("/%s/", host)
-	for _, entry := range entries {
-		if strings.HasPrefix(entry, prefix) {
-			err = p.runCommand("uci del_list dhcp.@dnsmasq[].address='%s'", entry)
-			return err
+	keep := []entry{}
+	for _, e := range p.entries {
+		if e.name == host {
+			err := p.runCommand("uci delete dhcp.%s", e.section)
+			if err != nil {
+				return err
+			}
+		} else {
+			keep = append(keep, e)
 		}
 	}
+	p.entries = keep
 	return nil
 }
 
@@ -181,6 +220,7 @@ func (p *openwrtPublisher) outputCommand(msg string, args ...interface{}) (strin
 	if err != nil {
 		return "", err
 	}
+	defer session.Close()
 
 	p.logger.Debug("openwrt", "cmd: %s", cmd)
 	bytes, err := session.CombinedOutput(cmd)
