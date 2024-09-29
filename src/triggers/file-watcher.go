@@ -61,5 +61,10 @@ func (t *fileWatchTrigger) Start() (<-chan interface{}, error) {
 		return nil, err
 	}
 
+	// this is the priming event to force an update at start
+	ch <- fileWatchTick{
+		fullPath: t.fullPath,
+	}
+
 	return ch, nil
 }
