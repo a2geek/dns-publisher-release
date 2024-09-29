@@ -32,6 +32,12 @@ func (t *fileWatchTrigger) Start() (<-chan interface{}, error) {
 
 	go func() {
 		defer watcher.Close()
+
+		// this is the priming event to force an update at start
+		ch <- fileWatchTick{
+			fullPath: t.fullPath,
+		}
+
 		for {
 			select {
 			case event, ok := <-watcher.Events:
@@ -59,11 +65,6 @@ func (t *fileWatchTrigger) Start() (<-chan interface{}, error) {
 	err = watcher.Add(filepath.Dir(t.fullPath))
 	if err != nil {
 		return nil, err
-	}
-
-	// this is the priming event to force an update at start
-	ch <- fileWatchTick{
-		fullPath: t.fullPath,
 	}
 
 	return ch, nil
