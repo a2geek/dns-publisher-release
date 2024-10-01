@@ -14,11 +14,11 @@ type Config struct {
 	Publisher map[string]string
 }
 type MappingConfig struct {
-	InstanceGroup string // required
-	Network       string // defaults to 'default'
-	Deployment    string // required
-	TLD           string // defaults to 'bosh'
-	FQDN          string // required
+	InstanceGroup string   // required
+	Network       string   // defaults to 'default'
+	Deployment    string   // required
+	TLD           string   // defaults to 'bosh'
+	FQDNs         []string // required
 }
 
 func NewConfigFromPath(path string) (Config, error) {
@@ -60,8 +60,8 @@ func (c *Config) Validate() error {
 }
 
 func (c *MappingConfig) Validate() error {
-	if c.InstanceGroup == "" || c.Deployment == "" || c.FQDN == "" {
-		return errors.New("mappings require an instance group, deployment, and FQDN")
+	if c.InstanceGroup == "" || c.Deployment == "" || len(c.FQDNs) == 0 {
+		return errors.New("mappings require an instance group, deployment, and FQDNs")
 	}
 	if c.Network == "" {
 		c.Network = "default"

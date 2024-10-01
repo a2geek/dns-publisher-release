@@ -47,7 +47,7 @@ describe 'dns-publisher job' do
             { 
               "instance-group" => "concourse",
               "deployment" => "concourse",
-              "fqdn" => "concourse.lan"
+              "fqdns" => ["concourse.lan"]
             }
           ]
         }))
@@ -64,7 +64,7 @@ describe 'dns-publisher job' do
               "network" => "my-network",
               "deployment" => "concourse",
               "tld" => "my-tld",
-              "fqdn" => "concourse.lan"
+              "fqdns" => ["concourse.lan"]
             }
           ]
         }))

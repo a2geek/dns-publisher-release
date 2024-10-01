@@ -82,12 +82,14 @@ func main() {
 				logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
 				continue
 			}
-			logger.Debug("main", "found '%s' for %v = %v", query, mapping.FQDN, ips)
-			change, err := adjustState(state, mapping.FQDN, ips)
-			if err != nil {
-				logger.Error("main", "error adjusting state for '%s': %v", mapping.FQDN, err)
+			logger.Debug("main", "found '%s' for %v = %v", query, mapping.FQDNs, ips)
+			for _, fqdn := range mapping.FQDNs {
+				change, err := adjustState(state, fqdn, ips)
+				if err != nil {
+					logger.Error("main", "error adjusting state for '%s': %v", fqdn, err)
+				}
+				changes = changes || change
 			}
-			changes = changes || change
 		}
 		if changes {
 			err = publisher.Commit()

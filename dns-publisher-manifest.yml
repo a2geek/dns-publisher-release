@@ -19,13 +19,13 @@ instance_groups:
       mappings:
       - instance-group: web
         deployment: concourse
-        fqdn: concourse.lan
+        fqdns: [concourse.lan]
       - instance-group: postgres
         deployment: postgres
-        fqdn: postgres.lan
+        fqdns: [postgres.lan]
       - instance-group: router
         deployment: cf
-        fqdn: "*.sys.cf.lan"
+        fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"

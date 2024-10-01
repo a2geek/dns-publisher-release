@@ -24,10 +24,10 @@ properties:
     example:
     - instance-group: concourse
       deployment: concourse
-      fqdn: concourse.lan
+      fqdns: [concourse.lan]
     - instance-group: router
       deployment: cf
-      fqdn: alias.cf.lan
+      fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
 
   publisher.type:
     description: "Publisher type. Currently supported are: openwrt and fake."
