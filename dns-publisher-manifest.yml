@@ -3,9 +3,9 @@ name: dns-publisher
 
 releases:
 - name: dns-publisher
-  version: v2
-  url: https://github.com/a2geek/dns-publisher-release/releases/download/v2/dns-publisher-release.tgz
-  sha1: 8ef7737ad98616d71053c63efcebcc9ad312916d
+  version: v3
+  url: https://github.com/a2geek/dns-publisher-release/releases/download/v3/dns-publisher-release.tgz
+  sha1: 8d97691691f17abf7d87efc6b559c9a625fd35b3
 
 instance_groups:
 - name: dns-publisher
