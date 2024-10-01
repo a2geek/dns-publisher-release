@@ -9,6 +9,8 @@ type dhcpDnsmasqAddressPublisher struct {
 	openwrtCommon
 }
 
+const fakeSectionName = "fake"
+
 func (p *dhcpDnsmasqAddressPublisher) Current() (map[string][]net.IP, error) {
 	p.entries = []entry{}
 	output, err := p.outputCommand("uci get dhcp.@dnsmasq[].address")
@@ -41,7 +43,7 @@ func (p *dhcpDnsmasqAddressPublisher) Current() (map[string][]net.IP, error) {
 				p.logger.Warn("unexpected IP format for host %s with '%s'", host, ip)
 				continue
 			}
-			p.appendEntry("", host, ipAddr)
+			p.appendEntry(fakeSectionName, host, ipAddr)
 		}
 	}
 	p.logger.Debug("openwrt", "entries found: %v", p.entries)
@@ -55,7 +57,7 @@ func (p *dhcpDnsmasqAddressPublisher) Add(host string, ips []net.IP) error {
 			return err
 		}
 
-		p.appendEntry("", host, ip)
+		p.appendEntry(fakeSectionName, host, ip)
 	}
 	return nil
 }
