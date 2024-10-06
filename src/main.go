@@ -102,15 +102,15 @@ func main() {
 
 func adjustState(state map[string][]net.IP, host string, newIPs []net.IP) (bool, error) {
 	currentIPs, ok := state[host]
-	if ok && !sameContents(currentIPs, newIPs) {
+	if ok && sameContents(currentIPs, newIPs) {
+		return false, nil
+	}
+	if ok {
 		err := publisher.Delete(host)
 		if err != nil {
 			return false, err
 		}
 		delete(state, host)
-	}
-	if ok {
-		return false, nil
 	}
 	err := publisher.Add(host, newIPs)
 	if err != nil {
