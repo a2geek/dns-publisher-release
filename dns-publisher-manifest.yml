@@ -26,7 +26,7 @@ instance_groups:
         - instance-group: postgres
           deployment: postgres
           fqdns: [postgres.lan]
-        - instance-group: router
+        - instance-group: haproxy
           deployment: cf
           fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
       publisher:
