@@ -27,7 +27,7 @@ instance_groups:
         fqdns: [postgres.lan]
       - instance-group: router
         deployment: cf
-        fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
+        fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"
