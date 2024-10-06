@@ -1,0 +1,6 @@
+---
+- type: replace
+  path: /releases/name=dns-publisher
+  value:
+    name: dns-publisher
+    version: latest

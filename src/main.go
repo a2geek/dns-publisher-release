@@ -54,7 +54,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	trigger, err := triggers.NewTrigger(config.Trigger, logger)
+	trigger, err := triggers.NewTrigger(config.BoshDns.Trigger, logger)
 	if err != nil {
 		logger.Error("main", "Configuring trigger: %s", err.Error())
 	}
@@ -75,7 +75,7 @@ func main() {
 		}
 		logger.Info("main", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 		changes := false
-		for _, mapping := range config.Mappings {
+		for _, mapping := range config.BoshDns.Mappings {
 			query := mapping.Query()
 			ips, err := source.Lookup(query)
 			if err != nil {

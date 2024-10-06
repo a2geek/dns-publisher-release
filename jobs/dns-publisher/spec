@@ -9,17 +9,16 @@ packages:
 - dns-publisher
 
 properties:
-  trigger.type:
+  bosh-dns.trigger.type:
     description: "Trigger type. Currently supported are file-watcher and timer."
     default: "file-watcher"
-  trigger.file-watcher:
+  bosh-dns.trigger.file-watcher:
     description: "Trigger a refresh when specified file is updated. This both interrogates/updates the router and BOSH DNS."
     default: "/var/vcap/instance/dns/records.json"
-  trigger.refresh:
+  bosh-dns.trigger.refresh:
     description: "Refresh rate for the DNS query. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
     default: "15m"
-
-  mappings:
+  bosh-dns.mappings:
     description: "BOSH DNS mappings to a FQDN"
     example:
     - instance-group: concourse
@@ -27,7 +26,7 @@ properties:
       fqdns: [concourse.lan]
     - instance-group: router
       deployment: cf
-      fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
+      fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
 
   publisher.type:
     description: "Publisher type. Currently supported are: openwrt and fake."

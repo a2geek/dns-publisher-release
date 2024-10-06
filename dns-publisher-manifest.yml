@@ -18,16 +18,17 @@ instance_groups:
   - name: dns-publisher
     release: dns-publisher
     properties:
-      mappings:
-      - instance-group: web
-        deployment: concourse
-        fqdns: [concourse.lan]
-      - instance-group: postgres
-        deployment: postgres
-        fqdns: [postgres.lan]
-      - instance-group: router
-        deployment: cf
-        fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+      bosh-dns:
+        mappings:
+        - instance-group: web
+          deployment: concourse
+          fqdns: [concourse.lan]
+        - instance-group: postgres
+          deployment: postgres
+          fqdns: [postgres.lan]
+        - instance-group: router
+          deployment: cf
+          fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"

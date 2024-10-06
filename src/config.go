@@ -9,9 +9,12 @@ import (
 )
 
 type Config struct {
-	Trigger   triggers.TriggerConfig
-	Mappings  []MappingConfig
+	BoshDns   *BoshDnsConfig
 	Publisher map[string]string
+}
+type BoshDnsConfig struct {
+	Trigger  triggers.TriggerConfig
+	Mappings []MappingConfig
 }
 type MappingConfig struct {
 	InstanceGroup string   // required
@@ -45,6 +48,17 @@ func (c *Config) Validate() error {
 		return errors.New("type of publisher required")
 	}
 
+	if c.BoshDns != nil {
+		err := c.BoshDns.Validate()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *BoshDnsConfig) Validate() error {
 	if len(c.Mappings) == 0 {
 		return errors.New("expecting dns query configuration")
 	}
