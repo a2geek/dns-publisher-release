@@ -1,14 +1,6 @@
 <%=
 
 config = {
-  "BoshDns" => {
-    "Trigger" => {
-      "Type" => p("bosh-dns.trigger.type"),
-      "FileWatcher" => p("bosh-dns.trigger.file-watcher"),
-      "Refresh" => p("bosh-dns.trigger.refresh")
-    },
-    "Mappings" => [],
-  },
   "Publisher" => {}
 }
 
@@ -20,7 +12,15 @@ config['Publisher'].merge!({
   "dry-run" => p("publisher.dry-run")
 })
 
-if_p("bosh-dns.mappings") do 
+if_p("bosh-dns.mappings") do
+  config["BoshDns"] = {
+    "Trigger" => {
+      "Type" => p("bosh-dns.trigger.type"),
+      "FileWatcher" => p("bosh-dns.trigger.file-watcher"),
+      "Refresh" => p("bosh-dns.trigger.refresh")
+    },
+    "Mappings" => [],
+  }
   p("bosh-dns.mappings").each do |mapping|
     config["BoshDns"]["Mappings"].push({
       "InstanceGroup" => mapping["instance-group"],
@@ -30,6 +30,21 @@ if_p("bosh-dns.mappings") do
       "FQDNs" => mapping["fqdns"]
     })
   end
+end
+
+if_p("cloud-foundry.mappings") do
+  config["CloudFoundry"] = {
+    "Trigger" => {
+      "Type" => "timer",
+      "Refresh" => p("cloud-foundry.trigger.refresh")
+    },
+    "URL" => p("cloud-foundry.url"),
+    "SkipSslValidation" => p("cloud-foundry.skip-ssl-validation"),
+    "ClientId" => p("cloud-foundry.client-id"),
+    "ClientSecret" => p("cloud-foundry.client-secret"),
+    "Alias" => p("cloud-foundry.alias"),
+    "Mappings" => p("cloud-foundry.mappings")
+  }
 end
 
 JSON.dump(config)

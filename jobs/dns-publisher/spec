@@ -28,6 +28,29 @@ properties:
       deployment: cf
       fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
 
+  cloud-foundry.trigger.type:
+    description: "Trigger type. Currently supported is timer."
+    default: "timer"
+  cloud-foundry.trigger.refresh:
+    description: "Refresh rate for the Cloud Foundry query. This both interrogates/updates the router and Cloud Foundry. Uses Go Duration notation."
+    default: "5m"
+  cloud-foundry.url:
+    description: "Full URL for connecting to Cloud Foundry API."
+    example: "https://api.sys.cf.lan"
+  cloud-foundry.skip-ssl-validation:
+    description: "Disable TLS validation for CF connections."
+    default: false
+  cloud-foundry.client-id:
+    description: "Client ID for connection to Cloud Foundry."
+  cloud-foundry.client-secret:
+    description: "Client Secret for connection to Cloud Foundry."
+  cloud-foundry.alias:
+    description: "Alias DNS name to map for URL."
+    example: "alias.sys.cf.lan"
+  cloud-foundry.mappings:
+    description: "List of wildcard URL matches."
+    example: '["*.cf.lan"]'
+
   publisher.type:
     description: "Publisher type. Currently supported are: openwrt and fake."
     default: openwrt

@@ -46,6 +46,15 @@ func main() {
 		go processor.Run()
 	}
 
+	if config.CloudFoundry != nil {
+		processor, err := processors.NewCloudFoundryProcessor(*config.CloudFoundry, publisher, logger)
+		if err != nil {
+			logger.Error("main", "Unable to create Cloud Foundry processor: %s", err.Error())
+			os.Exit(1)
+		}
+		go processor.Run()
+	}
+
 	// wait forever
 	select {}
 }

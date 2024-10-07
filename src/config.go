@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	BoshDns   *processors.BoshDnsConfig
-	Publisher map[string]string
+	BoshDns      *processors.BoshDnsConfig
+	CloudFoundry *processors.CloudFoundryConfig
+	Publisher    map[string]string
 }
 
 func NewConfigFromPath(path string) (Config, error) {
@@ -38,6 +39,13 @@ func (c *Config) Validate() error {
 
 	if c.BoshDns != nil {
 		err := c.BoshDns.Validate()
+		if err != nil {
+			return err
+		}
+	}
+
+	if c.CloudFoundry != nil {
+		err := c.CloudFoundry.Validate()
 		if err != nil {
 			return err
 		}

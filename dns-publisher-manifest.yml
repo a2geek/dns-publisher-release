@@ -29,6 +29,15 @@ instance_groups:
         - instance-group: haproxy
           deployment: cf
           fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+      cloud-foundry:
+        trigger:
+          refresh: 1m
+        url: https://api.sys.cf.lan
+        skip-ssl-validation: true
+        client-id: testapp
+        client-secret: testpw
+        alias: "alias.sys.cf.lan"
+        mappings: ["*.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"
