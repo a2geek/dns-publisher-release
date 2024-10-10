@@ -5,6 +5,8 @@ import (
 	"dns-publisher/publishers"
 	"dns-publisher/sources"
 	"dns-publisher/triggers"
+	"regexp"
+	"strings"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	"github.com/cloudfoundry/go-cfclient/v3/client"
@@ -62,9 +64,20 @@ func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.
 	}
 	logger.Info("cloud-foundry", "Connected. API version is %s", root.Links.CloudControllerV3.Meta.Version)
 
+	res := []*regexp.Regexp{}
+	for _, match := range cfConfig.Mappings {
+		str := strings.ReplaceAll(match, "*", "[-0-9a-zA-Z]+")
+		re, err := regexp.Compile("^" + str + "$")
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, re)
+	}
+
 	return &cloudFoundryProcessor{
 		trigger:   trigger,
 		cf:        cf,
+		regexps:   res,
 		publisher: publisher,
 		logger:    logger,
 	}, nil
