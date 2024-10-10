@@ -13,7 +13,7 @@ import (
 	"github.com/cloudfoundry/go-cfclient/v3/config"
 )
 
-func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.Publisher, logger boshlog.Logger) (Processor, error) {
+func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.IPPublisher, logger boshlog.Logger) (Processor, error) {
 	source, err := sources.NewSource()
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.Publisher, l
 	}, nil
 }
 
-func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.Publisher, logger boshlog.Logger) (Processor, error) {
+func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.AliasPublisher, logger boshlog.Logger) (Processor, error) {
 	trigger, err := triggers.NewTrigger(cfConfig.Trigger, logger)
 	if err != nil {
 		return nil, err

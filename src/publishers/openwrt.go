@@ -13,12 +13,55 @@ const (
 	DhcpDomain         = "dhcp-domain"
 )
 
-func NewOpenWrtPublisher(config map[string]string, logger boshlog.Logger, dryRun bool) (Publisher, error) {
+func NewOpenWrtIPPublisher(config map[string]string, logger boshlog.Logger, dryRun bool) (IPPublisher, error) {
 	strategy, ok := config["strategy"]
 	if !ok {
 		strategy = DhcpDnsmasqAddress
 	}
 
+	openwrtCommon, err := newOpenWrtCommon(config, logger, dryRun)
+	if err != nil {
+		return nil, err
+	}
+
+	ipMgr := &openwrtIp{
+		logger: logger,
+	}
+
+	switch strategy {
+	case DhcpDomain:
+		return &dhcpDomainPublisher{
+			logger:        logger,
+			openwrtCommon: openwrtCommon,
+			openwrtIp:     ipMgr,
+		}, nil
+	default:
+		return &dhcpDnsmasqAddressPublisher{
+			logger:        logger,
+			openwrtCommon: openwrtCommon,
+			openwrtIp:     ipMgr,
+		}, nil
+	}
+}
+
+func NewOpenWrtAliasPublisher(config map[string]string, logger boshlog.Logger, dryRun bool) (AliasPublisher, error) {
+	openwrtCommon, err := newOpenWrtCommon(config, logger, dryRun)
+	if err != nil {
+		return nil, err
+	}
+
+	aliasMgr := &openwrtAlias{
+		logger: logger,
+	}
+
+	return &dhcpCnamePublisher{
+		logger:        logger,
+		openwrtCommon: openwrtCommon,
+		openwrtAlias:  aliasMgr,
+	}, nil
+}
+
+func newOpenWrtCommon(config map[string]string, logger boshlog.Logger, dryRun bool) (*openwrtCommon, error) {
 	user, ok := config["user"]
 	if !ok {
 		user = "root"
@@ -44,26 +87,14 @@ func NewOpenWrtPublisher(config map[string]string, logger boshlog.Logger, dryRun
 
 	auth := ssh.PublicKeys(signer)
 
-	clientConfig := ssh.ClientConfig{
-		User:            user,
-		Auth:            []ssh.AuthMethod{auth},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
-	shared := openwrtCommon{
-		clientConfig: clientConfig,
-		hostAndPort:  host,
-		logger:       logger,
-		dryRun:       dryRun,
-	}
-
-	switch strategy {
-	case DhcpDomain:
-		return &dhcpDomainPublisher{
-			openwrtCommon: shared,
-		}, nil
-	default:
-		return &dhcpDnsmasqAddressPublisher{
-			openwrtCommon: shared,
-		}, nil
-	}
+	return &openwrtCommon{
+		clientConfig: ssh.ClientConfig{
+			User:            user,
+			Auth:            []ssh.AuthMethod{auth},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		},
+		hostAndPort: host,
+		logger:      logger,
+		dryRun:      dryRun,
+	}, nil
 }

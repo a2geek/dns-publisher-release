@@ -31,14 +31,14 @@ func main() {
 	}
 	logger.Info("main", "Configuration loaded")
 
-	publisher, err := publishers.NewPublisher(config.Publisher, logger)
-	if err != nil {
-		logger.Error("main", "Determining publisher - %s", err.Error())
-		os.Exit(1)
-	}
-
 	if config.BoshDns != nil {
-		processor, err := processors.NewBoshDnsProcessor(*config.BoshDns, publisher, logger)
+		publisher, err := publishers.NewIPPublisher(config.Publisher, logger)
+		if err != nil {
+			logger.Error("main", "Determining publisher - %s", err.Error())
+			os.Exit(1)
+		}
+	
+			processor, err := processors.NewBoshDnsProcessor(*config.BoshDns, publisher, logger)
 		if err != nil {
 			logger.Error("main", "Unable to create BOSH DNS processor: %s", err.Error())
 			os.Exit(1)
@@ -47,6 +47,13 @@ func main() {
 	}
 
 	if config.CloudFoundry != nil {
+		publisher, err := publishers.NewAliasPublisher(config.Publisher, logger)
+		if err != nil {
+			logger.Error("main", "Determining publisher - %s", err.Error())
+			os.Exit(1)
+		}
+	
+	
 		processor, err := processors.NewCloudFoundryProcessor(*config.CloudFoundry, publisher, logger)
 		if err != nil {
 			logger.Error("main", "Unable to create Cloud Foundry processor: %s", err.Error())

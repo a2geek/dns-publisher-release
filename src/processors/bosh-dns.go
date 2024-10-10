@@ -14,7 +14,7 @@ type boshDnsProcessor struct {
 	source    sources.Source
 	trigger   triggers.Trigger
 	mappings  []MappingConfig
-	publisher publishers.Publisher
+	publisher publishers.IPPublisher
 	logger    boshlog.Logger
 }
 

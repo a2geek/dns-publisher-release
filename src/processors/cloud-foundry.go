@@ -17,7 +17,7 @@ type cloudFoundryProcessor struct {
 	trigger   triggers.Trigger
 	cf        *client.Client
 	regexps   []*regexp.Regexp
-	publisher publishers.Publisher
+	publisher publishers.AliasPublisher
 	logger    boshlog.Logger
 }
 
