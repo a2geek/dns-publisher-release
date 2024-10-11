@@ -6,6 +6,8 @@ import (
 	"dns-publisher/triggers"
 	"os"
 	"regexp"
+	"slices"
+	"sort"
 	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
@@ -16,6 +18,7 @@ import (
 type cloudFoundryProcessor struct {
 	trigger   triggers.Trigger
 	cf        *client.Client
+	alias     string
 	regexps   []*regexp.Regexp
 	publisher publishers.AliasPublisher
 	logger    boshlog.Logger
@@ -105,7 +108,35 @@ func (p *cloudFoundryProcessor) Run() {
 			pager.NextPage(opts)
 		}
 
-		p.logger.Debug("cloud-foundry", "urls = %v", urls)
-		p.logger.Debug("cloud-foundry", "actions = %v", actions)
+		current, err := p.publisher.Current()
+		if err != nil {
+			p.logger.Error("cloud-foundry", "cannot retrieve current state: %v", err)
+			continue
+		}
+
+		slices.Sort(current)
+		changed := false
+		for url, action := range actions {
+			i := sort.SearchStrings(current, url)
+			exists := i < len(current) && current[i] == url
+			p.logger.Debug("cloud-foundry", "found '%s' in slice '%s': %t (at %d)", url, current, exists, i)
+			switch action {
+			case ROUTE_CREATE:
+				if !exists {
+					p.logger.Info("cloud-foundry", "making alias for '%s' to '%s'", url, p.alias)
+					p.publisher.Add(url, p.alias)
+					changed = true
+				}
+			case ROUTE_DELETE:
+				if exists {
+					p.logger.Info("cloud-foundry", "removing alias for '%s'", url)
+					p.publisher.Delete(url)
+					changed = true
+				}
+			}
+		}
+		if changed {
+			p.publisher.Commit()
+		}
 	}
 }

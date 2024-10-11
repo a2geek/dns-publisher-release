@@ -103,3 +103,12 @@ func (p *dhcpDomainPublisher) Delete(host string) error {
 	p.entries = keep
 	return nil
 }
+
+func (p *dhcpDomainPublisher) Commit() error {
+	p.reset()
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
+}

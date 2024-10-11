@@ -12,20 +12,6 @@ type openwrtCommon struct {
 	hostAndPort  string
 	logger       boshlog.Logger
 	dryRun       bool
-	openwrtManager
-}
-
-type openwrtManager interface {
-	reset()
-}
-
-func (p *openwrtCommon) Commit() error {
-	p.reset()
-	if p.dryRun {
-		return p.runCommand("uci revert dhcp")
-	} else {
-		return p.runCommand("uci commit dhcp; reload_config")
-	}
 }
 
 func (p *openwrtCommon) runCommand(msg string, args ...interface{}) error {

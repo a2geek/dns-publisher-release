@@ -44,7 +44,7 @@ func (p *dhcpCnamePublisher) Current() ([]string, error) {
 		switch values[2] {
 		case ".cname":
 			cname = values[3]
-		case ".alias":
+		case ".target":
 			target = values[3]
 		case "": // anything else is a section heading (both for 'domain' and everything else as well)
 			if values[3] == "cname" {
@@ -92,4 +92,13 @@ func (p *dhcpCnamePublisher) Delete(host string) error {
 	}
 	p.entries = keep
 	return nil
+}
+
+func (p *dhcpCnamePublisher) Commit() error {
+	p.reset()
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
 }

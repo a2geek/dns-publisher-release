@@ -82,3 +82,12 @@ func (p *dhcpDnsmasqAddressPublisher) Delete(host string) error {
 	p.entries = keep
 	return nil
 }
+
+func (p *dhcpDnsmasqAddressPublisher) Commit() error {
+	p.reset()
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
+}

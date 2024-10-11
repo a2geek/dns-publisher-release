@@ -77,6 +77,7 @@ func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.
 	return &cloudFoundryProcessor{
 		trigger:   trigger,
 		cf:        cf,
+		alias:     cfConfig.Alias,
 		regexps:   res,
 		publisher: publisher,
 		logger:    logger,
