@@ -17,7 +17,7 @@ case $1 in
     exec chpst -u vcap:vcap \
       ${BIN_DIR}/dns-publisher \
       -configPath ${CONFIG_DIR}/config.json \
-      -logLevel DEBUG \
+      -logLevel <%= p("log-level") %> \
       >> ${LOG_DIR}/dns-publisher-stdout.log \
       2>> ${LOG_DIR}/dns-publisher-stderr.log
 

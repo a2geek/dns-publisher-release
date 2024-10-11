@@ -9,6 +9,10 @@ packages:
 - dns-publisher
 
 properties:
+  log-level:
+    description: "Logging level. Allowed values are: NONE, ERROR, WARN, INFO, DEBUG"
+    default: "info"
+
   bosh-dns.trigger.type:
     description: "Trigger type. Currently supported are file-watcher and timer."
     default: "file-watcher"

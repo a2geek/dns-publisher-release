@@ -18,6 +18,7 @@ instance_groups:
   - name: dns-publisher
     release: dns-publisher
     properties:
+      log-level: info
       bosh-dns:
         mappings:
         - instance-group: web
