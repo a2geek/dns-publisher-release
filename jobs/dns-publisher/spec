@@ -9,17 +9,20 @@ packages:
 - dns-publisher
 
 properties:
-  trigger.type:
+  log-level:
+    description: "Logging level. Allowed values are: NONE, ERROR, WARN, INFO, DEBUG"
+    default: "info"
+
+  bosh-dns.trigger.type:
     description: "Trigger type. Currently supported are file-watcher and timer."
     default: "file-watcher"
-  trigger.file-watcher:
+  bosh-dns.trigger.file-watcher:
     description: "Trigger a refresh when specified file is updated. This both interrogates/updates the router and BOSH DNS."
     default: "/var/vcap/instance/dns/records.json"
-  trigger.refresh:
+  bosh-dns.trigger.refresh:
     description: "Refresh rate for the DNS query. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
     default: "15m"
-
-  mappings:
+  bosh-dns.mappings:
     description: "BOSH DNS mappings to a FQDN"
     example:
     - instance-group: concourse
@@ -27,7 +30,30 @@ properties:
       fqdns: [concourse.lan]
     - instance-group: router
       deployment: cf
-      fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
+      fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+
+  cloud-foundry.trigger.type:
+    description: "Trigger type. Currently supported is timer."
+    default: "timer"
+  cloud-foundry.trigger.refresh:
+    description: "Refresh rate for the Cloud Foundry query. This both interrogates/updates the router and Cloud Foundry. Uses Go Duration notation."
+    default: "5m"
+  cloud-foundry.url:
+    description: "Full URL for connecting to Cloud Foundry API."
+    example: "https://api.sys.cf.lan"
+  cloud-foundry.skip-ssl-validation:
+    description: "Disable TLS validation for CF connections."
+    default: false
+  cloud-foundry.client-id:
+    description: "Client ID for connection to Cloud Foundry."
+  cloud-foundry.client-secret:
+    description: "Client Secret for connection to Cloud Foundry."
+  cloud-foundry.alias:
+    description: "Alias DNS name to map for URL."
+    example: "alias.sys.cf.lan"
+  cloud-foundry.mappings:
+    description: "List of wildcard URL matches."
+    example: '["*.cf.lan"]'
 
   publisher.type:
     description: "Publisher type. Currently supported are: openwrt and fake."

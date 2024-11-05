@@ -22,6 +22,11 @@ type refreshTick struct {
 func (t *refreshTrigger) Start() (<-chan interface{}, error) {
 	ch := make(chan interface{})
 	go func() {
+		// priming tick
+		ch <- refreshTick{
+			data: time.Now(),
+		}
+
 		for t := range time.Tick(t.duration) {
 			ch <- refreshTick{
 				data: t,

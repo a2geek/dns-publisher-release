@@ -3,16 +3,21 @@ package publishers
 import (
 	"net"
 	"strings"
+
+	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
 type dhcpDnsmasqAddressPublisher struct {
-	openwrtCommon
+	logger boshlog.Logger
+
+	*openwrtCommon
+	*openwrtIp
 }
 
 const fakeSectionName = "fake"
 
 func (p *dhcpDnsmasqAddressPublisher) Current() (map[string][]net.IP, error) {
-	p.entries = []entry{}
+	p.reset()
 	output, err := p.outputCommand("uci get dhcp.@dnsmasq[].address")
 	if err != nil {
 		if strings.Contains(output, "uci: Entry not found") {
@@ -63,7 +68,7 @@ func (p *dhcpDnsmasqAddressPublisher) Add(host string, ips []net.IP) error {
 }
 
 func (p *dhcpDnsmasqAddressPublisher) Delete(host string) error {
-	keep := []entry{}
+	keep := []ipEntry{}
 	for _, e := range p.entries {
 		if e.name == host {
 			err := p.runCommand("uci del_list dhcp.@dnsmasq[].address='/%s/%s'", e.name, e.ip.String())
@@ -76,4 +81,13 @@ func (p *dhcpDnsmasqAddressPublisher) Delete(host string) error {
 	}
 	p.entries = keep
 	return nil
+}
+
+func (p *dhcpDnsmasqAddressPublisher) Commit() error {
+	p.reset()
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
 }

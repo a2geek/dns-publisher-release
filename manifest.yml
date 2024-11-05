@@ -18,16 +18,30 @@ instance_groups:
   - name: dns-publisher
     release: dns-publisher
     properties:
-      mappings:
-      - instance-group: web
-        deployment: concourse
-        fqdns: [concourse.lan]
-      - instance-group: postgres
-        deployment: postgres
-        fqdns: [postgres.lan]
-      - instance-group: router
-        deployment: cf
-        fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
+      log-level: info
+      bosh-dns:
+        mappings:
+        - instance-group: web
+          deployment: concourse
+          fqdns: [concourse.lan]
+        - instance-group: haproxy
+          deployment: cf
+          fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+        - instance-group: gitea
+          deployment: gitea
+          fqdns: [gitea.gdc.lan]
+        - instance-group: jumpbox
+          deployment: jumpbox
+          fqdns: [jumpbox.gdc.lan]
+      cloud-foundry:
+        trigger:
+          refresh: 1m
+        url: https://api.sys.cf.lan
+        skip-ssl-validation: true
+        client-id: testapp
+        client-secret: testpw
+        alias: "alias.sys.cf.lan"
+        mappings: ["*.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"

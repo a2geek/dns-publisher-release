@@ -5,10 +5,15 @@ import (
 	"net"
 	"regexp"
 	"strings"
+
+	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
 type dhcpDomainPublisher struct {
-	openwrtCommon
+	logger boshlog.Logger
+
+	*openwrtCommon
+	*openwrtIp
 }
 
 func (p *dhcpDomainPublisher) Current() (map[string][]net.IP, error) {
@@ -29,7 +34,7 @@ func (p *dhcpDomainPublisher) Current() (map[string][]net.IP, error) {
 	var section, name string
 	var ip net.IP
 	scanner := bufio.NewScanner(strings.NewReader(output))
-	p.entries = []entry{}
+	p.reset()
 	for scanner.Scan() {
 		// 0 = full matching text
 		// 1 = section id (ex: cfg09f37d)
@@ -84,7 +89,7 @@ func (p *dhcpDomainPublisher) Add(host string, ips []net.IP) error {
 }
 
 func (p *dhcpDomainPublisher) Delete(host string) error {
-	keep := []entry{}
+	keep := []ipEntry{}
 	for _, e := range p.entries {
 		if e.name == host {
 			err := p.runCommand("uci delete dhcp.%s", e.section)
@@ -97,4 +102,13 @@ func (p *dhcpDomainPublisher) Delete(host string) error {
 	}
 	p.entries = keep
 	return nil
+}
+
+func (p *dhcpDomainPublisher) Commit() error {
+	p.reset()
+	if p.dryRun {
+		return p.runCommand("uci revert dhcp")
+	} else {
+		return p.runCommand("uci commit dhcp; reload_config")
+	}
 }
