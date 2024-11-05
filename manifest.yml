@@ -24,12 +24,15 @@ instance_groups:
         - instance-group: web
           deployment: concourse
           fqdns: [concourse.lan]
-        - instance-group: postgres
-          deployment: postgres
-          fqdns: [postgres.lan]
         - instance-group: haproxy
           deployment: cf
           fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+        - instance-group: gitea
+          deployment: gitea
+          fqdns: [gitea.gdc.lan]
+        - instance-group: jumpbox
+          deployment: jumpbox
+          fqdns: [jumpbox.gdc.lan]
       cloud-foundry:
         trigger:
           refresh: 1m
