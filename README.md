@@ -11,64 +11,17 @@ DNS Publisher runs in a small VM in a BOSH release. The reasons for this are:
 1. BOSH DNS is not available at `169.254.0.2:53` on the BOSH Director and
 2. the `/var/bosh/instance/dns/records.json` file doesn't exist on the BOSH Director (nor is it available in a container such as Cloud Foundry).
 
-### Configuration
+## Configuration
 
-The DNS Publisher is currently comprised of 3 parts: a trigger, DNS mappings, and a publisher. In the BOSH manifest, these are at `instance_groups/jobs/name=dns-publisher/properties` ([see the manifest](dns-publisher-manifest.yml)).
+The DNS Publisher is currently comprised of 3 parts: a processor, a trigger, and a publisher. In the BOSH manifest, these are at `instance_groups/jobs/name=dns-publisher/properties` ([see the manifest](manifest.yml)). Both processors (BOSH DNS, Cloud Foundry) can be configured in the same install.
 
-#### Trigger
+| | BOSH | Cloud Foundry |
+| --- | --- | --- |
+| Processors | [`bosh-dns`](docs/processors/bosh-dns.md) | [`cloud-foundry`](docs/processors/cloud-foundry.md) |
+| Triggers | [`timer`](docs/triggers/timer.md), [`file-watcher`](docs/triggers/file-watcher.md) | [`timer`](docs/triggers/timer.md) |
+| Publisher | [`fake`](docs/publishers/fake.md), [`openwrt`](docs/publishers/openwrt.md) | same |
 
-There are two types of triggers. The `file-watcher` (default) and the `timer`. The `file-watcher` is the most useful in that the publisher is only triggered at start time and when the DNS entries get updated.
-
-Example - `file-watcher`
-
-```yaml
-# do nothing
-```
-
-But if you want to specify the file-watcher, these are the components:
-
-```yaml
-trigger:
-  type: file-watcher
-  file-watcher: "/var/vcap/instance/dns/records.json"
-```
-
-The `timer` forces a periodic update:
-
-```yaml
-trigger:
-  type: timer
-  refresh: "15m"
-```
-
-Note that the refresh interval is specified by Go's [`ParseDuration`](https://pkg.go.dev/time#ParseDuration).
-
-#### Mappings
-
-DNS mappings are specified by an array where each entry consists of 5 items:
-
-* `instance-group` is a string with the name of the instance group from the BOSH deployment manifest,
-* `network` is the name of the network used by the VMs (default is `default`),
-* `deployment` is the name of the BOSH deployment,
-* `tld` is the name of the TLD (default is `bosh` and likely is universal), and
-* `fqdns` is an array of strings specifying the domain names. Note that the publisher may limit the contents of this list (such as allowing wildcards in the name).
-
-For example:
-
-```yaml
-mappings:
-- instance-group: web
-  deployment: concourse
-  fqdns: [concourse.lan]
-- instance-group: postgres
-  deployment: postgres
-  fqdns: [postgres.lan]
-- instance-group: router
-  deployment: cf
-  fqdns: [alias.cf.lan, "*.sys.cf.lan", "*.app.cf.lan"]
-```
-
-#### Publisher
+## Publisher
 
 The publisher is the component that pushes the DNS configuration into the router. Only [OpenWrt](https://openwrt.org/) is supported at this time.
 
@@ -83,50 +36,6 @@ publisher:
 ```
 
 Note that setting `dry-run` to `true` (the default value) allows some experimentation without making changes to the router. The actions taken should be logged for review.
-
-##### OpenWrt
-
-OpenWrt configuration is managed by using the `uci` system command. An SSH key will be required to make the connection. See below for an example of how to generate with CredHub.
-
-Options available are:
-
-* `strategy` allows a choice of `dhcp-dnsmasq-address` (default) and `dhcp-domain`. This impacts how the router is configured. The default (`dhcp-dnsmasq-address`) allows wildcards and configures the Addresses section in the Network > DHCP and DNS > General tab. The `dhcp-domain` updates the information in the Network > DHCP and DNS > Hostnames tab and does not support wildcards.
-* `user` is the name of the SSH user. The default of `root` is likely the only valid value.
-* `host` is the address (and optionally, the port number) for the SSH connection.
-* `private-key` is the SSH private key to initiate the SSH connection. If the value is in the BOSH CredHub, this is just a reference.
-
-Example:
-
-```yaml
-publisher:
-  type: openwrt
-  dry-run: "false"
-  options:
-    strategy: "dhcp-dnsmasq-address"
-    user: root
-    host: 192.168.1.1
-    private-key: ((openwrt.private_key))
-```
-
-To generate the SSH key within CredHub, the following command will generate an SSH key:
-
-```shell
-$ credhub generate --name="/lxd/dns-publisher/openwrt" --type="ssh" --ssh-comment="dns publisher"
-id: 9350b3ef-7846-4fa2-9c91-3bcd5407360c
-name: /lxd/dns-publisher/openwrt
-type: ssh
-value: <redacted>
-version_created_at: "2024-09-16T16:08:03Z"
-```
-
-Then, the SSH public key needs to be copied into OpenWrt in the System > Administration > SSH Keys tab:
-
-```shell
-$ credhub get --name=/lxd/dns-publisher/openwrt --key=public_key
-ssh-rsa <redacted> dns publisher
-```
-
-Copy into OpenWrt as an SSH key that has access.
 
 ## Deploying DNS Publisher
 
