@@ -48,7 +48,7 @@ bosh-dns:
 
 ## Manifest configuration
 
-The Manifest mapping will read a BOSH manifest from the specified director, identifying tags of the form: `dns-entry: my.fqdn.lan` (comma separated for a list) and configure DNS with that entry. Configuration options are:
+The Manifest mapping will read a BOSH manifest from the specified director, identifying tags of the form: `fqdns: my.fqdn.lan` (comma separated for a list) and configure DNS with that entry. Configuration options are:
 
 * `url` is the API endpoint to the BOSH director,
 * `certificate` is the certificate enabling trust,
