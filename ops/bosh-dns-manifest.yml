@@ -1,0 +1,11 @@
+---
+- type: replace
+  path: /instance_groups/name=dns-publisher/jobs/name=dns-publisher/properties/bosh-dns?
+  value:
+    type: manifest
+    options:
+      url: ((bosh_director_url))
+      certificate: ((bosh_certificate))
+      skip-ssl-validation: ((bosh_skip_ssl_validation))
+      client-id: ((bosh_client_id))
+      client-secret: ((bosh_client_secret))

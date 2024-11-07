@@ -1,0 +1,12 @@
+---
+- type: replace
+  path: /instance_groups/name=dns-publisher/jobs/name=dns-publisher/properties/cloud-foundry?
+  value:
+    trigger:
+      refresh: 1m
+    url: ((cf_api_url))
+    skip-ssl-validation: ((cf_skip_ssl_validation))
+    client-id: ((cf_client_id))
+    client-secret: ((cf_client_secret))
+    alias: ((cf_alias))
+    mappings: ((cf_mappings))
