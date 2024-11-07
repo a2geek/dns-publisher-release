@@ -25,9 +25,11 @@ func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.IPPublisher,
 	}
 
 	return &boshDnsProcessor{
-		source:    source,
-		trigger:   trigger,
-		mappings:  config.Mappings,
+		source:  source,
+		trigger: trigger,
+		mappings: func() ([]MappingConfig, error) {
+			return config.Mappings, nil
+		},
 		publisher: publisher,
 		logger:    logger,
 	}, nil

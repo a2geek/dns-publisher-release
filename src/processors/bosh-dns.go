@@ -13,7 +13,7 @@ import (
 type boshDnsProcessor struct {
 	source    sources.Source
 	trigger   triggers.Trigger
-	mappings  []MappingConfig
+	mappings  func() ([]MappingConfig, error)
 	publisher publishers.IPPublisher
 	logger    boshlog.Logger
 }
@@ -42,7 +42,14 @@ func (p *boshDnsProcessor) Run() {
 		}
 		p.logger.Info("main", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 		changes := false
-		for _, mapping := range p.mappings {
+
+		mappings, err := p.mappings()
+		if err != nil {
+			p.logger.Error("bosh-dns", "retrieving mappings: %s", err.Error())
+			os.Exit(1)
+		}
+
+		for _, mapping := range mappings {
 			query := mapping.Query()
 			ips, err := p.source.Lookup(query)
 			if err != nil {
