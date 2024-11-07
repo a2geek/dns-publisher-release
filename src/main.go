@@ -29,7 +29,7 @@ func main() {
 		logger.Error("main", "Loading config %s", err.Error())
 		os.Exit(1)
 	}
-	logger.Info("main", "Configuration loaded")
+	logger.Debug("main", "Configuration loaded: %v", config)
 
 	if config.BoshDns != nil {
 		publisher, err := publishers.NewIPPublisher(config.Publisher, logger)
@@ -37,8 +37,8 @@ func main() {
 			logger.Error("main", "Determining publisher - %s", err.Error())
 			os.Exit(1)
 		}
-	
-			processor, err := processors.NewBoshDnsProcessor(*config.BoshDns, publisher, logger)
+
+		processor, err := processors.NewBoshDnsProcessor(*config.BoshDns, publisher, logger)
 		if err != nil {
 			logger.Error("main", "Unable to create BOSH DNS processor: %s", err.Error())
 			os.Exit(1)
@@ -52,8 +52,7 @@ func main() {
 			logger.Error("main", "Determining publisher - %s", err.Error())
 			os.Exit(1)
 		}
-	
-	
+
 		processor, err := processors.NewCloudFoundryProcessor(*config.CloudFoundry, publisher, logger)
 		if err != nil {
 			logger.Error("main", "Unable to create Cloud Foundry processor: %s", err.Error())

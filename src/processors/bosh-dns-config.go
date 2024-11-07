@@ -30,10 +30,10 @@ type DirectorConfig struct {
 }
 
 func (c *BoshDnsConfig) Validate() error {
-	if len(c.Mappings) == 0 {
-		return errors.New("expecting dns query configuration")
-	}
 	if c.Type == "manual" {
+		if len(c.Mappings) == 0 {
+			return errors.New("expecting dns query configuration")
+		}
 		for _, m := range c.Mappings {
 			err := m.Validate()
 			if err != nil {

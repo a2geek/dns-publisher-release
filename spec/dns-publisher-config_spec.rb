@@ -13,6 +13,7 @@ describe 'dns-publisher job' do
       config = JSON.parse(template.render({
         # all defaults
         "bosh-dns" => {
+          "type" => "manual",
           "mappings" => []
         }
       }))
@@ -28,6 +29,7 @@ describe 'dns-publisher job' do
             "trigger" => {
               "file-watcher" => "/tmp/file.json"
             },
+            "type" => "manual",
             "mappings" => []
           }
       }))
@@ -44,6 +46,7 @@ describe 'dns-publisher job' do
             "type" => "timer",
             "refresh" => "30s"
           },
+          "type" => "manual",
           "mappings" => []
         }
       }))
@@ -53,9 +56,10 @@ describe 'dns-publisher job' do
       expect(config['CloudFoundry']).to be(nil)
     end
 
-    it 'assigns bosh dns mappings defaults' do
+    it 'assigns bosh dns manual mappings defaults' do
       config = JSON.parse(template.render({
         "bosh-dns" => {
+          "type" => "manual",
           "mappings" => [
             { 
               "instance-group" => "concourse",
@@ -66,14 +70,42 @@ describe 'dns-publisher job' do
         }
       }))
 
+      expect(config['BoshDns']["Type"]).to eq("manual")
+      expect(config['BoshDns']["Mappings"][0]["InstanceGroup"]).to eq("concourse")
+      expect(config['BoshDns']["Mappings"][0]["Deployment"]).to eq("concourse")
       expect(config['BoshDns']["Mappings"][0]["Network"]).to eq("default")
       expect(config['BoshDns']["Mappings"][0]["TLD"]).to eq("bosh")
+      expect(config['BoshDns']["Mappings"][0]["FQDNs"]).to eq(["concourse.lan"])
       expect(config['CloudFoundry']).to be(nil)
     end
 
-    it 'allows bosh dns default overrides in mappings' do
+    it 'allows bosh dns configuration for manifest mappings' do
       config = JSON.parse(template.render({
         "bosh-dns" => {
+          "type" => "manifest",
+          "options" => { 
+            "url" => "https://boshdirector:25555",
+            "certificate" => "my certificate",
+            "skip-ssl-validation" => "true",
+            "client-id" => "my client",
+            "client-secret" => "my secret"
+          }
+        }
+      }))
+
+      expect(config['BoshDns']["Type"]).to eq("manifest")
+      expect(config['BoshDns']["Director"]["URL"]).to eq("https://boshdirector:25555")
+      expect(config['BoshDns']["Director"]["Certificate"]).to eq("my certificate")
+      expect(config['BoshDns']["Director"]["SkipSslValidation"]).to eq("true")
+      expect(config['BoshDns']["Director"]["ClientId"]).to eq("my client")
+      expect(config['BoshDns']["Director"]["ClientSecret"]).to eq("my secret")
+      expect(config['CloudFoundry']).to eq(nil)
+    end
+
+    it 'allows bosh dns default overrides in manual mappings' do
+      config = JSON.parse(template.render({
+        "bosh-dns" => {
+          "type" => "manual",
           "mappings" => [
             { 
               "instance-group" => "concourse",
@@ -86,8 +118,12 @@ describe 'dns-publisher job' do
         }
       }))
 
+      expect(config['BoshDns']["Type"]).to eq("manual")
+      expect(config['BoshDns']["Mappings"][0]["InstanceGroup"]).to eq("concourse")
+      expect(config['BoshDns']["Mappings"][0]["Deployment"]).to eq("concourse")
       expect(config['BoshDns']["Mappings"][0]["Network"]).to eq("my-network")
       expect(config['BoshDns']["Mappings"][0]["TLD"]).to eq("my-tld")
+      expect(config['BoshDns']["Mappings"][0]["FQDNs"]).to eq(["concourse.lan"])
       expect(config['CloudFoundry']).to eq(nil)
     end
 

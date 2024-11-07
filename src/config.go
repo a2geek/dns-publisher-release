@@ -37,11 +37,13 @@ func (c *Config) Validate() error {
 		return errors.New("type of publisher required")
 	}
 
+	count := 0
 	if c.BoshDns != nil {
 		err := c.BoshDns.Validate()
 		if err != nil {
 			return err
 		}
+		count++
 	}
 
 	if c.CloudFoundry != nil {
@@ -49,6 +51,11 @@ func (c *Config) Validate() error {
 		if err != nil {
 			return err
 		}
+		count++
+	}
+
+	if count == 0 {
+		return errors.New("at least one of bosh-dns or cloud-foundry must be configured")
 	}
 
 	return nil

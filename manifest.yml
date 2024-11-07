@@ -41,15 +41,15 @@ instance_groups:
           skip-ssl-validation: false
           client-id: ((bosh-client.username))
           client-secret: ((bosh-client.password))
-      cloud-foundry:
-        trigger:
-          refresh: 1m
-        url: https://api.sys.cf.lan
-        skip-ssl-validation: true
-        client-id: testapp
-        client-secret: testpw
-        alias: "alias.sys.cf.lan"
-        mappings: ["*.cf.lan"]
+      # cloud-foundry:
+      #   trigger:
+      #     refresh: 1m
+      #   url: https://api.sys.cf.lan
+      #   skip-ssl-validation: true
+      #   client-id: testapp
+      #   client-secret: testpw
+      #   alias: "alias.sys.cf.lan"
+      #   mappings: ["*.cf.lan"]
       publisher:
         type: openwrt
         dry-run: "false"

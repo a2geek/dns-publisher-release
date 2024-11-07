@@ -12,23 +12,37 @@ config['Publisher'].merge!({
   "dry-run" => p("publisher.dry-run")
 })
 
-if_p("bosh-dns.mappings") do
+if_p("bosh-dns.type") do |type|
   config["BoshDns"] = {
+    "Type" => type,
     "Trigger" => {
       "Type" => p("bosh-dns.trigger.type"),
       "FileWatcher" => p("bosh-dns.trigger.file-watcher"),
       "Refresh" => p("bosh-dns.trigger.refresh")
-    },
-    "Mappings" => [],
+    }
   }
-  p("bosh-dns.mappings").each do |mapping|
-    config["BoshDns"]["Mappings"].push({
-      "InstanceGroup" => mapping["instance-group"],
-      "Network" => mapping["network"] || "default",
-      "Deployment" => mapping["deployment"],
-      "TLD" => mapping["tld"] || "bosh",
-      "FQDNs" => mapping["fqdns"]
-    })
+
+  if type == "manual"
+    config["BoshDns"]["Mappings"] = []
+    p("bosh-dns.mappings").each do |mapping|
+      config["BoshDns"]["Mappings"].push({
+        "InstanceGroup" => mapping["instance-group"],
+        "Network" => mapping["network"] || "default",
+        "Deployment" => mapping["deployment"],
+        "TLD" => mapping["tld"] || "bosh",
+        "FQDNs" => mapping["fqdns"]
+      })
+    end
+  elsif type == "manifest"
+    config["BoshDns"]["Director"] = {
+      "URL" => p("bosh-dns.options.url"),
+      "Certificate" => p("bosh-dns.options.certificate"),
+      "SkipSslValidation" => p("bosh-dns.options.skip-ssl-validation"),
+      "ClientId" => p("bosh-dns.options.client-id"),
+      "ClientSecret" => p("bosh-dns.options.client-secret")
+    }
+  else
+    raise "unknown bosh-dns.type: " + p("bosh-dns.type")
   end
 end
 

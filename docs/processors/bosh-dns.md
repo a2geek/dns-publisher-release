@@ -17,7 +17,7 @@ bosh-dns:
 
 ## Triggers
 
-For BOSH DNS, the trigger is specified by the `trigger` entry. Compatible triggers are [`timer`](../triggers/timer.md) and [`file-watcher`](../triggers/file-watcher.md). Note that the default is `file-watcher`, so it is likely this does not need to be configured.
+For BOSH DNS, the trigger is specified by the `trigger` entry. Compatible triggers are [`timer`](../triggers/timer.md) and [`file-watcher`](../triggers/file-watcher.md). Note that the default is `file-watcher`, so it is likely this does not need to be configured. (The file is not read, but it is a good proxy for when BOSH DNS was updated and controls how frequently DNS activity is performed.)
 
 ## Manual Mappings
 
@@ -48,7 +48,7 @@ bosh-dns:
 
 ## Manifest configuration
 
-The Director source will read a BOSH manifest from the specified director, identifying tags of the form: `dns-entry: my.fqdn.lan` and configure DNS with that entry. Configuration options are:
+The Manifest mapping will read a BOSH manifest from the specified director, identifying tags of the form: `dns-entry: my.fqdn.lan` (comma separated for a list) and configure DNS with that entry. Configuration options are:
 
 * `url` is the API endpoint to the BOSH director,
 * `certificate` is the certificate enabling trust,
