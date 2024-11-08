@@ -2,6 +2,7 @@
 
 | Name | Description |
 | :--- | :--- |
+| [`apply-fqdns.yml`](apply-fqdns.yml) | Example to apply a FQDNs for a deployment. Note that this is a template rather than an actual ops file. |
 | [`bosh-dns-manifest.yml`](bosh-dns-manifest.yml) | Configure BOSH DNS to look in manifests for FQDN. Requires `bosh_director_url`, `bosh_certificate`, `bosh_skip_ssl_validation`, `bosh_client_id`, and `bosh_client_secret`. See below for example configuration. |
 | [`bosh-dns-manual.yml`](bosh-dns-manual.yml) | Manual configuration for the BOSH DNS component. Expects `bosh-dns-mappings`. See below of example configuration. |
 | [`cloud-foundry.yml`](cloud-foundry.yml) | Configure Cloud Foundry. Expects `cf_api_url`, `cf_skip_ssl_validation`, `cf_client_id`, `cf_client_secret`, `cf_alias`, `cf_mappings` (an array of recognition strings). See below for example configuration. |
