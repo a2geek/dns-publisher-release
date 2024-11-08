@@ -1,0 +1,6 @@
+# Note this is a sample - we can't use a variable in the path component.
+# Make a copy and modify. Remember that the value is a comma-separated string.
+---
+- type: replace
+  path: /instance_groups/name=((dns_instance_group_name))/tags?/fqdns?
+  value: ((dns_publish_fqdns))

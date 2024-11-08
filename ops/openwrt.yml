@@ -1,0 +1,11 @@
+---
+- type: replace
+  path: /instance_groups/name=dns-publisher/jobs/name=dns-publisher/properties/publisher?
+  value:
+    type: openwrt
+    dry-run: "false"
+    options:
+      strategy: "dhcp-dnsmasq-address"
+      user: root
+      host: ((openwrt_ip_address))
+      private-key: ((openwrt_private_key))

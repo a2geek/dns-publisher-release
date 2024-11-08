@@ -15,6 +15,8 @@ DNS Publisher runs in a small VM in a BOSH release. The reasons for this are:
 
 The DNS Publisher is currently comprised of 3 parts: a processor, a trigger, and a publisher. In the BOSH manifest, these are at `instance_groups/jobs/name=dns-publisher/properties` ([see the manifest](manifest.yml)). Both processors (BOSH DNS, Cloud Foundry) can be configured in the same install.
 
+> Please note the possible dependency between the CF processor and the BOSH DNS processor. If BOSH DNS is setting up the DNS entries for Cloud Foundry, be certain BOSH DNS is configured and the DNS entries exist. Otherwise, the CF API endpoint will not be available and DNS Publisher will fail to start.
+
 | | BOSH | Cloud Foundry |
 | --- | --- | --- |
 | Processors | [`bosh-dns`](docs/processors/bosh-dns.md) | [`cloud-foundry`](docs/processors/cloud-foundry.md) |
@@ -39,10 +41,16 @@ Note that setting `dry-run` to `true` (the default value) allows some experiment
 
 ## Deploying DNS Publisher
 
-Create and configure DNS Publisher via the manifest. Then deploy:
+Create and configure DNS Publisher via the manifest (docs above) and [ops files](ops/README.md).
+
+Then deploy:
 
 ```shell
-$ bosh -n -d dns-publisher deploy dns-publisher-manifest.yml 
+$ bosh -d dns-publisher deploy manifest.yml \
+       --vars-file vars.yml \
+       -o ops/bosh-dns-manifest.yml \
+       -o ops/cloud-foundry.yml \
+       -o ops/openwrt.yml 
 Using environment '10.245.0.11' as client 'admin'
 
 Using deployment 'dns-publisher'

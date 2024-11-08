@@ -13,7 +13,7 @@ import (
 type boshDnsProcessor struct {
 	source    sources.Source
 	trigger   triggers.Trigger
-	mappings  []MappingConfig
+	mappings  func() ([]MappingConfig, error)
 	publisher publishers.IPPublisher
 	logger    boshlog.Logger
 }
@@ -21,39 +21,47 @@ type boshDnsProcessor struct {
 func (p *boshDnsProcessor) Run() {
 	state, err := p.publisher.Current()
 	if err != nil {
-		p.logger.Error("main", "Retrieving current configuration - %s", err.Error())
+		p.logger.Error("bosh-dns", "Retrieving current configuration - %s", err.Error())
 		os.Exit(1)
 	}
-	p.logger.Info("main", "Startup state includes %d entries: %v", len(state), hostKeysAsString(state))
+	p.logger.Info("bosh-dns", "Startup state includes %d entries: %v", len(state), hostKeysAsString(state))
 
 	events, err := p.trigger.Start()
 	if err != nil {
-		p.logger.Error("main", "Starting event trigger: %s", err.Error())
+		p.logger.Error("bosh-dns", "Starting event trigger: %s", err.Error())
 	}
 
 	for range events {
 		// check and refresh
-		p.logger.Info("main", "Updating from DNS")
+		p.logger.Info("bosh-dns", "Updating from DNS")
 
 		state, err = p.publisher.Current()
 		if err != nil {
-			p.logger.Error("main", "Retrieving current configuration - %s", err.Error())
+			p.logger.Error("bosh-dns", "Retrieving current configuration - %s", err.Error())
 			os.Exit(1)
 		}
-		p.logger.Info("main", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
+		p.logger.Info("bosh-dns", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 		changes := false
-		for _, mapping := range p.mappings {
+
+		mappings, err := p.mappings()
+		if err != nil {
+			p.logger.Error("bosh-dns", "retrieving mappings: %s", err.Error())
+			os.Exit(1)
+		}
+		p.logger.Debug("bosh-dns", "mappings found: %v", mappings)
+
+		for _, mapping := range mappings {
 			query := mapping.Query()
 			ips, err := p.source.Lookup(query)
 			if err != nil {
-				p.logger.Warn("main", "unable to lookup '%s': %s", query, err.Error())
+				p.logger.Warn("bosh-dns", "unable to lookup '%s': %s", query, err.Error())
 				continue
 			}
-			p.logger.Debug("main", "found '%s' for %v = %v", query, mapping.FQDNs, ips)
+			p.logger.Debug("bosh-dns", "found '%s' for %v = %v", query, mapping.FQDNs, ips)
 			for _, fqdn := range mapping.FQDNs {
 				change, err := p.adjustState(state, fqdn, ips)
 				if err != nil {
-					p.logger.Error("main", "error adjusting state for '%s': %v", fqdn, err)
+					p.logger.Error("bosh-dns", "error adjusting state for '%s': %v", fqdn, err)
 				}
 				changes = changes || change
 			}
@@ -61,7 +69,7 @@ func (p *boshDnsProcessor) Run() {
 		if changes {
 			err = p.publisher.Commit()
 			if err != nil {
-				p.logger.Error("main", "unable to commit changes: %s", err.Error())
+				p.logger.Error("bosh-dns", "unable to commit changes: %s", err.Error())
 			}
 		}
 	}

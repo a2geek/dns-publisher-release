@@ -17,3 +17,4 @@ src/config.json
 src/dns-publisher
 dns-publisher-release.tgz
 src/records.json
+vars.yml

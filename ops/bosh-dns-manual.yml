@@ -1,0 +1,6 @@
+---
+- type: replace
+  path: /instance_groups/name=dns-publisher/jobs/name=dns-publisher/properties/bosh-dns?
+  value:
+    type: manual
+    mappings: ((bosh_dns_mappings))

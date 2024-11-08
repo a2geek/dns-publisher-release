@@ -5,6 +5,7 @@ import (
 	"dns-publisher/publishers"
 	"dns-publisher/sources"
 	"dns-publisher/triggers"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -24,13 +25,28 @@ func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.IPPublisher,
 		return nil, err
 	}
 
-	return &boshDnsProcessor{
+	processor := &boshDnsProcessor{
 		source:    source,
 		trigger:   trigger,
-		mappings:  config.Mappings,
 		publisher: publisher,
 		logger:    logger,
-	}, nil
+	}
+
+	if config.Type == "manual" {
+		processor.mappings = func() ([]MappingConfig, error) {
+			return config.Mappings, nil
+		}
+		return processor, nil
+	} else if config.Type == "manifest" {
+		client, err := NewBoshConnection(config.Director, logger)
+		if err != nil {
+			return nil, err
+		}
+		processor.mappings = client.GetMappings
+		return processor, nil
+	} else {
+		return nil, fmt.Errorf("unknown dns processor type: %s", config.Type)
+	}
 }
 
 func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.AliasPublisher, logger boshlog.Logger) (Processor, error) {

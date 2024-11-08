@@ -22,6 +22,10 @@ properties:
   bosh-dns.trigger.refresh:
     description: "Refresh rate for the DNS query. This both interrogates/updates the router and BOSH DNS. Uses Go Duration notation."
     default: "15m"
+  bosh-dns.type:
+    description: "Indicates the type of mappings to apply. Allowed values are 'manual' or 'manifest'."
+
+  # 'manual' configuration
   bosh-dns.mappings:
     description: "BOSH DNS mappings to a FQDN"
     example:
@@ -31,6 +35,27 @@ properties:
     - instance-group: router
       deployment: cf
       fqdns: ["*.sys.cf.lan", "*.app.cf.lan"]
+
+  # 'manifest' configuration
+  bosh-dns.options.url:
+    description: "URL for the director."
+    example: "https://bosh.ip:25555"
+  bosh-dns.options.certificate:
+    description: "Certificate of the director."
+    default: ""
+    example: |
+        -----BEGIN CERTIFICATE-----
+        <snip>
+        -----END CERTIFICATE-----
+  bosh-dns.options.skip-ssl-validation:
+    description: "Indicates of director connection should skip ssl validation."
+    default: "false"
+  bosh-dns.options.client-id:
+    description: "Client id for Director."
+    example: "dns_publisher"
+  bosh-dns.options.client-secret:
+    description: "Client secret for Director."
+    example: secret
 
   cloud-foundry.trigger.type:
     description: "Trigger type. Currently supported is timer."
