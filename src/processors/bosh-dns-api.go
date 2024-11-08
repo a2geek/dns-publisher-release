@@ -69,7 +69,7 @@ type boshManifest struct {
 }
 
 func (b *boshConnection) GetMappings() ([]MappingConfig, error) {
-	b.logger.Info("bosh-manifest", "refreshing from bosh manifests")
+	b.logger.Info("bosh-manifest", "refreshing from bosh manifests: start")
 	deps, err := b.client.GetDeployments()
 	if err != nil {
 		return nil, err
@@ -103,5 +103,6 @@ func (b *boshConnection) GetMappings() ([]MappingConfig, error) {
 			}
 		}
 	}
+	b.logger.Info("bosh-manifest", "refreshing from bosh manifests: end")
 	return mappings, nil
 }
