@@ -11,7 +11,7 @@ DNS Publisher runs in a small VM in a BOSH release. The reasons for this are:
 1. BOSH DNS is not available at `169.254.0.2:53` on the BOSH Director and
 2. the `/var/bosh/instance/dns/records.json` file doesn't exist on the BOSH Director (nor is it available in a container such as Cloud Foundry).
 
-If you are running just the Cloud Foundry publisher, or are doing the timing component of BOSH DNS, this can be hosted elsewhere.
+If you are running just the Cloud Foundry publisher, or are doing the timing component of BOSH DNS, this can be hosted elsewhere (within the BOSH world).
 
 ## Configuration
 
