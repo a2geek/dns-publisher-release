@@ -2,6 +2,8 @@
 
 The `openwrt` publisher publishes to OpenWrt routers. There are a number of configuration options, mostly due to multiple routes to accomplish something. OpenWrt configuration is managed by using the `uci` system command. An SSH key will be required to make the connection. See below for an example of how to generate with CredHub.
 
+> Note that there are actually TWO strategies involved. One to publish IP addresses for a BOSH VM. The other is to publish a CNAME for Cloud Foundry (mapping to some alias URL) -- however, there is currently only one choice. Thus, the `strategy` below only refers to the BOSH IP addresses.
+
 Options available are:
 
 * `strategy` allows a choice of `dhcp-dnsmasq-address` (default) and `dhcp-domain`. This impacts how the router is configured. The default (`dhcp-dnsmasq-address`) allows wildcards and configures the Addresses section in the Network > DHCP and DNS > General tab. The `dhcp-domain` updates the information in the Network > DHCP and DNS > Hostnames tab and does not support wildcards.

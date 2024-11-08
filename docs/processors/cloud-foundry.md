@@ -1,10 +1,10 @@
 # Cloud Foundry
 
-For Cloud Foundry, the trigger is specified by the `trigger` entry. The only compatible trigger is the `refresh` trigger.
+For Cloud Foundry, the trigger is specified by the `trigger` entry. The only compatible trigger is the `refresh` trigger, and the defaults probably suffice (1 minute intervals).
 
 The CF mappings are defined by a wild-card URL for identification and an alias mapping. Note that the alias doesn't have to be "real", just be directed to the CF routers. Thus, if the system domain is `*.sys.cf.lan`, the alias can be `alias.sys.cf.lan` - just as long as the name doesn't over-ride anything from Cloud Foundry itself.
 
-The CF DNS mappings are specified by an array of `mappings` that identify non-wildcard domains and the alias to map them to:
+The configuration options are:
 
 * `url` is the CF API url,
 * `skip-ssl-validation` will skip SSL validation (may help with self-signed certs, unless you add the cert to the trusted certs list),
@@ -24,7 +24,7 @@ cloud-foundry:
   client-id: testapp
   client-secret: testpw
   alias: "alias.sys.cf.lan"
-  mappings: ["*.cf.lan"]
+  mappings: ["*.cf.lan","*.gdc.lan"]
 ```
 
 ## Cloud Foundry authentication

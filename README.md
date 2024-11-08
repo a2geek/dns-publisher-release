@@ -11,6 +11,8 @@ DNS Publisher runs in a small VM in a BOSH release. The reasons for this are:
 1. BOSH DNS is not available at `169.254.0.2:53` on the BOSH Director and
 2. the `/var/bosh/instance/dns/records.json` file doesn't exist on the BOSH Director (nor is it available in a container such as Cloud Foundry).
 
+If you are running just the Cloud Foundry publisher, or are doing the timing component of BOSH DNS, this can be hosted elsewhere.
+
 ## Configuration
 
 The DNS Publisher is currently comprised of 3 parts: a processor, a trigger, and a publisher. In the BOSH manifest, these are at `instance_groups/jobs/name=dns-publisher/properties` ([see the manifest](manifest.yml)). Both processors (BOSH DNS, Cloud Foundry) can be configured in the same install.
@@ -23,9 +25,18 @@ The DNS Publisher is currently comprised of 3 parts: a processor, a trigger, and
 | Triggers | [`timer`](docs/triggers/timer.md), [`file-watcher`](docs/triggers/file-watcher.md) | [`timer`](docs/triggers/timer.md) |
 | Publisher | [`fake`](docs/publishers/fake.md), [`openwrt`](docs/publishers/openwrt.md) | same |
 
-## Publisher
+## Extending DNS Publisher
 
-The publisher is the component that pushes the DNS configuration into the router. Only [OpenWrt](https://openwrt.org/) is supported at this time.
+Most components in the DNS Publisher are covered by interfaces. Hypotheticaly, they can be extended.
+
+| Component | Interface | Description |
+| :--- | :--- | :--- |
+| Processor | [`interface.go`](src/processors/interface.go) | The Processor is the core operation of the DNS Publisher. The interface is currently just `Run()`. |
+| Publisher | [`publisher.go`](src/publishers/publisher.go) | The publisher is the component that pushes the DNS configuration into the router. Note that there are _two_ types of publisher: `IPPublisher` and `AliasPublisher`. This is most likely what needs to expand. See the overview below. |
+| Source | [`factory.go`](src/sources/factory.go) | This is how the BOSH DNS processors lookup the IP for a host. Originally, the thought was to pull directly from the BOSH DNS `records.json` but that proved to bring no value. |
+| Trigger | [`factory.go`](src/triggers/factory.go) | The trigger is what initiates a refresh cycle. |
+
+## Publisher Configuration Overview
 
 Generally, the publisher will be specified with a common structure:
 
