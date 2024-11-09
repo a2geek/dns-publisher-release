@@ -27,11 +27,11 @@ The DNS Publisher is currently comprised of 3 parts: a processor, a trigger, and
 
 ## Extending DNS Publisher
 
-Most components in the DNS Publisher are covered by interfaces. Hypotheticaly, they can be extended.
+Most components in the DNS Publisher are covered by interfaces. Hypothetically, they can be extended. Note that Processor is configured to publish an Action whenever a trigger event fires. This is intended to prevent conflicts should both processors fire at the same time.
 
 | Component | Interface | Description |
 | :--- | :--- | :--- |
-| Processor | [`interface.go`](src/processors/interface.go) | The Processor is the core operation of the DNS Publisher. The interface is currently just `Run()`. |
+| Processor | [`interface.go`](src/processors/interface.go) | The Processor is the core operation of the DNS Publisher. There are two interfaces: `Processor` is  just `Run(actionChan chan<- Action)` and `Action` is `Name() string` and `Act()`. |
 | Publisher | [`publisher.go`](src/publishers/publisher.go) | The publisher is the component that pushes the DNS configuration into the router. Note that there are _two_ types of publisher: `IPPublisher` and `AliasPublisher`. This is most likely what needs to expand. See the overview below. |
 | Source | [`factory.go`](src/sources/factory.go) | This is how the BOSH DNS processors lookup the IP for a host. Originally, the thought was to pull directly from the BOSH DNS `records.json` but that proved to bring no value. |
 | Trigger | [`factory.go`](src/triggers/factory.go) | The trigger is what initiates a refresh cycle. |

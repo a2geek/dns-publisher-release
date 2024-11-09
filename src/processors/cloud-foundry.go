@@ -30,19 +30,23 @@ const (
 	ROUTE_DELETE = "audit.route.delete-request"
 )
 
-func (p *cloudFoundryProcessor) Run() {
-	events, err := p.trigger.Start()
+func (p *cloudFoundryProcessor) Run(actionChan chan<- Action) {
+	triggers, err := p.trigger.Start()
 	if err != nil {
 		p.logger.Error("cloud-foundry", "Starting event trigger: %s", err.Error())
 		os.Exit(1)
 	}
 
-	for range events {
-		p.checkEvents()
+	for range triggers {
+		actionChan <- p
 	}
 }
 
-func (p *cloudFoundryProcessor) checkEvents() {
+func (p *cloudFoundryProcessor) Name() string {
+	return "cloud-foundry"
+}
+
+func (p *cloudFoundryProcessor) Act() {
 	p.logger.Debug("cloud-foundry", "checking at %s", time.Now())
 	opts := client.NewAuditEventListOptions()
 	if !p.priorRun.IsZero() {

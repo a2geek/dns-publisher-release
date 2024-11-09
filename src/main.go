@@ -31,6 +31,8 @@ func main() {
 	}
 	logger.Debug("main", "Configuration loaded: %v", config)
 
+	actionChan := make(chan processors.Action)
+
 	if config.BoshDns != nil {
 		publisher, err := publishers.NewIPPublisher(config.Publisher, logger)
 		if err != nil {
@@ -43,7 +45,7 @@ func main() {
 			logger.Error("main", "Unable to create BOSH DNS processor: %s", err.Error())
 			os.Exit(1)
 		}
-		go processor.Run()
+		go processor.Run(actionChan)
 	}
 
 	if config.CloudFoundry != nil {
@@ -58,9 +60,12 @@ func main() {
 			logger.Error("main", "Unable to create Cloud Foundry processor: %s", err.Error())
 			os.Exit(1)
 		}
-		go processor.Run()
+		go processor.Run(actionChan)
 	}
 
-	// wait forever
-	select {}
+	for action := range actionChan {
+		logger.Debug("main", ">>> Start of '%s'", action.Name())
+		action.Act()
+		logger.Debug("main", "<<< End of '%s'", action.Name())
+	}
 }
