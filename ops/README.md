@@ -9,6 +9,7 @@
 | [`dev.yml`](dev.yml) | Use current uploaded version. |
 | [`openwrt.yml`](openwrt.yml) | Configure OpenWrt publisher. Expects `openwrt_ip_address` and `openwrt_private_key`. See below for example configuration. |
 | [`set-log-level.yml`](set-log-level.yml) | Override the 'info' log level. Set `log_level` to one of `none`, `error`, `warn`, `info`, `debug`. |
+| [`set-networks-and-azs.yml`](set-networks-and-azs.yml) | Configure the `azs` and `networks` section of the manifest. These should be arrays like `azs_list: [z1, z2]` and `networks_list: [{name: default}]`. |
 
 ## Sample Configurations
 

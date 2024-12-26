@@ -1,0 +1,8 @@
+---
+- type: replace
+  path: /instance_groups/name=dns-publisher/azs
+  value: ((azs_list))
+
+- type: replace
+  path: /instance_groups/name=dns-publisher/networks
+  value: ((networks_list))
