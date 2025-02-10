@@ -6,8 +6,16 @@ name: Build Go
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - 'src/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+    - 'src/**'
+
+defaults:
+  run:
+    working-directory: src
 
 jobs:
 
@@ -23,8 +31,6 @@ jobs:
 
     - name: Build
       run: go build -mod vendor -v ./...
-      working-directory: src
 
     - name: Test
       run: go test -mod vendor -v ./...
-      working-directory: src
