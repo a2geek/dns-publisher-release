@@ -10,11 +10,23 @@ name: Test job templates
 on:
   push:
     branches: [ "main" ]
+    paths:
+    - 'jobs/*/templates/**'
+    - 'spec'
+    - '.github/workflows/templates.yml'
   pull_request:
     branches: [ "main" ]
+    paths:
+    - 'jobs/*/templates/**'
+    - 'spec'
+    - '.github/workflows/templates.yml'
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: spec
 
 jobs:
   test:
@@ -27,12 +39,11 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        working-directory: spec
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      working-directory: spec
       run: |
         cat Gemfile
         bundle install
+        gem install bosh-template
         gem install rspec
         rspec dns-publisher-config_spec.rb
