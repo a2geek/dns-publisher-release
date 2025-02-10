@@ -8,10 +8,12 @@ on:
     branches: [ "main" ]
     paths:
     - 'src/**'
+    - '.github/workflows/go.yml'
   pull_request:
     branches: [ "main" ]
     paths:
     - 'src/**'
+    - '.github/workflows/go.yml'
 
 defaults:
   run:
