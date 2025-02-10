@@ -1,3 +1,8 @@
 source "https://rubygems.org"
 ruby File.read('.ruby-version').strip
-gem 'bosh-template'
+
+group :development, :test do
+  gem 'bosh-template'
+  gem 'rspec'
+  gem 'rspec-its'
+end
