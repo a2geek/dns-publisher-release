@@ -32,5 +32,7 @@ jobs:
     - name: Run tests
       working-directory: spec
       run: |
+        cat Gemfile
+        bundle install
         gem install rspec
         rspec dns-publisher-config_spec.rb
