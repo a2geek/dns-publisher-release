@@ -111,7 +111,7 @@ func (b *boshConnection) GetMappings() ([]MappingConfig, error) {
 func (b *boshConnection) IsReady() (bool, error) {
 	b.logger.Info("bosh-tasks", "retrieving running tasks: start")
 
-	var values url.Values
+	values := url.Values{}
 	values.Add("state", "running")
 	values.Add("limit", "10")
 	tasks, err := b.client.GetTasksByQuery(values)
