@@ -6,6 +6,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/cloudfoundry-community/gogobosh"
@@ -13,7 +14,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func NewBoshConnection(config DirectorConfig, logger boshlog.Logger) (*boshConnection, error) {
+func NewBoshConnection(config DirectorConfig, logger boshlog.Logger) (boshDnsMapper, error) {
 	clientConfig := &gogobosh.Config{
 		BOSHAddress:       config.URL,
 		ClientID:          config.ClientId,
@@ -105,4 +106,20 @@ func (b *boshConnection) GetMappings() ([]MappingConfig, error) {
 	}
 	b.logger.Info("bosh-manifest", "refreshing from bosh manifests: end")
 	return mappings, nil
+}
+
+func (b *boshConnection) IsReady() (bool, error) {
+	b.logger.Info("bosh-tasks", "retrieving running tasks: start")
+
+	var values url.Values
+	values.Add("state", "running")
+	values.Add("limit", "10")
+	tasks, err := b.client.GetTasksByQuery(values)
+	if err != nil {
+		return false, err
+	}
+
+	// A somewhat naive implementation: If tasks keep piling up, we could wait forever.
+	b.logger.Info("bosh-tasks", "retrieving running tasks: end")
+	return len(tasks) == 0, nil
 }

@@ -48,6 +48,8 @@ bosh-dns:
 
 ## Manifest configuration
 
+> Note that the manifest configuration will _delay up to 60 minutes_ until all BOSH tasks are complete. This ties up the publishing until it succeeds.
+
 The Manifest mapping will read a BOSH manifest from the specified director, identifying tags of the form: `fqdns: my.fqdn.lan` (comma separated for a list) and configure DNS with that entry. Configuration options are:
 
 * `url` is the API endpoint to the BOSH director,

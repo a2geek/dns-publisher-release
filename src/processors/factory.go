@@ -33,16 +33,14 @@ func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.IPPublisher,
 	}
 
 	if config.Type == "manual" {
-		processor.mappings = func() ([]MappingConfig, error) {
-			return config.Mappings, nil
-		}
+		processor.mapper = NewStaticMapper(config.Mappings)
 		return processor, nil
 	} else if config.Type == "manifest" {
 		client, err := NewBoshConnection(config.Director, logger)
 		if err != nil {
 			return nil, err
 		}
-		processor.mappings = client.GetMappings
+		processor.mapper = client
 		return processor, nil
 	} else {
 		return nil, fmt.Errorf("unknown dns processor type: %s", config.Type)

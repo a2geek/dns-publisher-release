@@ -6,6 +6,7 @@ import (
 	"dns-publisher/triggers"
 	"net"
 	"os"
+	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
@@ -13,7 +14,7 @@ import (
 type boshDnsProcessor struct {
 	source    sources.Source
 	trigger   triggers.Trigger
-	mappings  func() ([]MappingConfig, error)
+	mapper    boshDnsMapper
 	publisher publishers.IPPublisher
 	logger    boshlog.Logger
 }
@@ -44,18 +45,37 @@ func (p *boshDnsProcessor) Act() {
 	// check and refresh
 	p.logger.Info("bosh-dns", "Updating from DNS")
 
+	// ~ 1 hour @ 30 second intervals
+	retries := 120
+	for {
+		ready, err := p.mapper.IsReady()
+		if err != nil {
+			p.logger.Error("bosh-dns", "Checking if BOSH mapper is ready - %s", err.Error())
+			return
+		}
+		if ready {
+			break
+		}
+		retries--
+		if retries == 0 {
+			p.logger.Error("bosh-dns", "BOSH mapper never became ready!")
+			return
+		}
+		time.Sleep(30 * time.Second)
+	}
+
 	state, err := p.publisher.Current()
 	if err != nil {
 		p.logger.Error("bosh-dns", "Retrieving current configuration - %s", err.Error())
-		os.Exit(1)
+		return
 	}
 	p.logger.Info("bosh-dns", "Current state includes %d entries: %v\n", len(state), hostKeysAsString(state))
 	changes := false
 
-	mappings, err := p.mappings()
+	mappings, err := p.mapper.GetMappings()
 	if err != nil {
 		p.logger.Error("bosh-dns", "retrieving mappings: %s", err.Error())
-		os.Exit(1)
+		return
 	}
 	p.logger.Debug("bosh-dns", "mappings found: %v", mappings)
 
