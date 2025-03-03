@@ -1,10 +1,10 @@
-# code.cloudfoundry.org/tlsconfig v0.18.0
-## explicit; go 1.22
+# code.cloudfoundry.org/tlsconfig v0.19.0
+## explicit; go 1.23.0
 code.cloudfoundry.org/tlsconfig
 # github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 ## explicit; go 1.22.0
 github.com/cloudfoundry-community/gogobosh
-# github.com/cloudfoundry/bosh-utils v0.0.532
+# github.com/cloudfoundry/bosh-utils v0.0.533
 ## explicit; go 1.23.0
 github.com/cloudfoundry/bosh-utils/errors
 github.com/cloudfoundry/bosh-utils/httpclient
@@ -25,7 +25,7 @@ github.com/cloudfoundry/go-cfclient/v3/testutil
 # github.com/cloudfoundry/go-socks5 v0.0.0-20240831012420-2590b55236ee
 ## explicit; go 1.21.0
 github.com/cloudfoundry/go-socks5
-# github.com/cloudfoundry/socks5-proxy v0.2.143
+# github.com/cloudfoundry/socks5-proxy v0.2.144
 ## explicit; go 1.23.0
 github.com/cloudfoundry/socks5-proxy
 # github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0
