@@ -11,8 +11,8 @@ github.com/cloudfoundry/bosh-utils/httpclient
 github.com/cloudfoundry/bosh-utils/logger
 github.com/cloudfoundry/bosh-utils/retrystrategy
 github.com/cloudfoundry/bosh-utils/uuid
-# github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.9
-## explicit; go 1.19
+# github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.10
+## explicit; go 1.23.0
 github.com/cloudfoundry/go-cfclient/v3/client
 github.com/cloudfoundry/go-cfclient/v3/config
 github.com/cloudfoundry/go-cfclient/v3/internal/check
@@ -78,8 +78,8 @@ golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/net/context
 golang.org/x/net/internal/socks
 golang.org/x/net/proxy
-# golang.org/x/oauth2 v0.24.0
-## explicit; go 1.18
+# golang.org/x/oauth2 v0.27.0
+## explicit; go 1.23.0
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
