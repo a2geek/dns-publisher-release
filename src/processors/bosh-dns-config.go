@@ -27,6 +27,7 @@ type DirectorConfig struct {
 	SkipSslValidation bool
 	ClientId          string // required
 	ClientSecret      string // required
+	FQDNAllowed       []string
 }
 
 func (c *BoshDnsConfig) Validate() error {

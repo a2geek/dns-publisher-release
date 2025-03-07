@@ -39,7 +39,8 @@ if_p("bosh-dns.type") do |type|
       "Certificate" => p("bosh-dns.options.certificate"),
       "SkipSslValidation" => p("bosh-dns.options.skip-ssl-validation"),
       "ClientId" => p("bosh-dns.options.client-id"),
-      "ClientSecret" => p("bosh-dns.options.client-secret")
+      "ClientSecret" => p("bosh-dns.options.client-secret"),
+      "FQDNAllowed" => p("bosh-dns.options.fqdn-allowed"),
     }
   else
     raise "unknown bosh-dns.type: " + p("bosh-dns.type")

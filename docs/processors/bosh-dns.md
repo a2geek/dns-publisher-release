@@ -57,6 +57,7 @@ The Manifest mapping will read a BOSH manifest from the specified director, iden
 * `skip-ssl-validation` to skip validation (likely only need to set one of `certificate` or `skip-ssl-validation`),
 * `client-id` the client id to connect with (see below),
 * `client-secret` is the secret for the client id.
+* `fqdn-allowed` is a list of wildcard strings with DNS entries allowed. Intended to help prevent DNS crossover between multiple BOSH directors.
 
 ```yaml
 bosh-dns:
@@ -67,6 +68,8 @@ bosh-dns:
     skip-ssl-validation: false
     client-id: ((bosh-client.username))
     client-secret: ((bosh-client.password))
+    fqdn-allowed:
+    - "*.list.of.fqdns.allowed"
 ```
 
 ### Mapping DNS entries

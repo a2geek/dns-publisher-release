@@ -9,3 +9,4 @@
       skip-ssl-validation: ((bosh_skip_ssl_validation))
       client-id: ((bosh_client_id))
       client-secret: ((bosh_client_secret))
+      fqdn-allowed: ((bosh_fqdn_allowed))

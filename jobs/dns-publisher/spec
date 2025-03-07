@@ -56,6 +56,11 @@ properties:
   bosh-dns.options.client-secret:
     description: "Client secret for Director."
     example: secret
+  bosh-dns.options.fqdn-allowed:
+    description: "Allowed DNS names. Intended to force namespace across BOSH instances (dev and prod, for instance). Array."
+    example:
+    - "*.devbosh.lan"
+    - "*.devapp.lan"
 
   cloud-foundry.trigger.type:
     description: "Trigger type. Currently supported is timer."

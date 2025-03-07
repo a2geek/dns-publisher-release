@@ -88,7 +88,8 @@ describe 'dns-publisher job' do
             "certificate" => "my certificate",
             "skip-ssl-validation" => "true",
             "client-id" => "my client",
-            "client-secret" => "my secret"
+            "client-secret" => "my secret",
+            "fqdn-allowed" => [ "*.boshdev.lan", "*.appdev.lan" ]
           }
         }
       }))
@@ -99,6 +100,7 @@ describe 'dns-publisher job' do
       expect(config['BoshDns']["Director"]["SkipSslValidation"]).to eq("true")
       expect(config['BoshDns']["Director"]["ClientId"]).to eq("my client")
       expect(config['BoshDns']["Director"]["ClientSecret"]).to eq("my secret")
+      expect(config['BoshDns']["Director"]["FQDNAllowed"]).to eq(["*.boshdev.lan","*.appdev.lan"])
       expect(config['CloudFoundry']).to eq(nil)
     end
 

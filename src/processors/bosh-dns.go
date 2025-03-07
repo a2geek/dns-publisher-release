@@ -6,17 +6,19 @@ import (
 	"dns-publisher/triggers"
 	"net"
 	"os"
+	"regexp"
 	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
 type boshDnsProcessor struct {
-	source    sources.Source
-	trigger   triggers.Trigger
-	mapper    boshDnsMapper
-	publisher publishers.IPPublisher
-	logger    boshlog.Logger
+	source             sources.Source
+	trigger            triggers.Trigger
+	mapper             boshDnsMapper
+	publisher          publishers.IPPublisher
+	logger             boshlog.Logger
+	fqdnAllowedRegexps []*regexp.Regexp
 }
 
 func (p *boshDnsProcessor) Run(actionChan chan<- Action) {
@@ -88,6 +90,11 @@ func (p *boshDnsProcessor) Act() {
 		}
 		p.logger.Debug("bosh-dns", "found '%s' for %v = %v", query, mapping.FQDNs, ips)
 		for _, fqdn := range mapping.FQDNs {
+			if !p.IsAllowedFQDN(fqdn) {
+				p.logger.Warn("bosh-dns", "unable to publish fqdn as it is not allowed: %s", fqdn)
+				continue
+			}
+
 			change, err := p.adjustState(state, fqdn, ips)
 			if err != nil {
 				p.logger.Error("bosh-dns", "error adjusting state for '%s': %v", fqdn, err)
@@ -101,6 +108,18 @@ func (p *boshDnsProcessor) Act() {
 			p.logger.Error("bosh-dns", "unable to commit changes: %s", err.Error())
 		}
 	}
+}
+
+func (p *boshDnsProcessor) IsAllowedFQDN(fqdn string) bool {
+	if p.fqdnAllowedRegexps == nil {
+		return true
+	}
+	for _, allowRegexp := range p.fqdnAllowedRegexps {
+		if allowRegexp.Match([]byte(fqdn)) {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *boshDnsProcessor) adjustState(state map[string][]net.IP, host string, newIPs []net.IP) (bool, error) {

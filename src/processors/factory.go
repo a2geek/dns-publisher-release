@@ -41,6 +41,13 @@ func NewBoshDnsProcessor(config BoshDnsConfig, publisher publishers.IPPublisher,
 			return nil, err
 		}
 		processor.mapper = client
+
+		allowRegexps, err := createRegexps(config.Director.FQDNAllowed)
+		if err != nil {
+			return nil, err
+		}
+		processor.fqdnAllowedRegexps = allowRegexps
+
 		return processor, nil
 	} else {
 		return nil, fmt.Errorf("unknown dns processor type: %s", config.Type)
@@ -78,14 +85,9 @@ func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.
 	}
 	logger.Info("cloud-foundry", "Connected. API version is %s", root.Links.CloudControllerV3.Meta.Version)
 
-	res := []*regexp.Regexp{}
-	for _, match := range cfConfig.Mappings {
-		str := strings.ReplaceAll(match, "*", "[-0-9a-zA-Z]+")
-		re, err := regexp.Compile("^" + str + "$")
-		if err != nil {
-			return nil, err
-		}
-		res = append(res, re)
+	res, err := createRegexps(cfConfig.Mappings)
+	if err != nil {
+		return nil, err
 	}
 
 	return &cloudFoundryProcessor{
@@ -96,4 +98,17 @@ func NewCloudFoundryProcessor(cfConfig CloudFoundryConfig, publisher publishers.
 		publisher: publisher,
 		logger:    logger,
 	}, nil
+}
+
+func createRegexps(wildcards []string) ([]*regexp.Regexp, error) {
+	res := []*regexp.Regexp{}
+	for _, match := range wildcards {
+		str := strings.ReplaceAll(match, "*", "[-0-9a-zA-Z]+")
+		re, err := regexp.Compile("^" + str + "$")
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, re)
+	}
+	return res, nil
 }
