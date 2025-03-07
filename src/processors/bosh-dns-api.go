@@ -112,12 +112,13 @@ func (b *boshConnection) IsReady() (bool, error) {
 	b.logger.Info("bosh-tasks", "retrieving running tasks: start")
 
 	values := url.Values{}
-	values.Add("state", "running")
+	values.Add("state", "processing")
 	values.Add("limit", "10")
 	tasks, err := b.client.GetTasksByQuery(values)
 	if err != nil {
 		return false, err
 	}
+	b.logger.Debug("bosh-tasks", "current task list: %v", tasks)
 
 	// A somewhat naive implementation: If tasks keep piling up, we could wait forever.
 	b.logger.Info("bosh-tasks", "retrieving running tasks: end")
