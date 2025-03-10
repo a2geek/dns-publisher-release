@@ -4,7 +4,7 @@ go 1.23.1
 
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
-	github.com/cloudfoundry/bosh-utils v0.0.533
+	github.com/cloudfoundry/bosh-utils v0.0.534
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.10
 	github.com/fsnotify/fsnotify v1.8.0
 	golang.org/x/crypto v0.35.0
