@@ -1,0 +1,23 @@
+name: dns-publisher
+version: v6
+commit_hash: 591c1ca
+uncommitted_changes: false
+jobs:
+- name: dns-publisher
+  version: 618a3901dfe355276a98eb24af5602182db7bb8f0198206c39b6e02d711d4736
+  fingerprint: 618a3901dfe355276a98eb24af5602182db7bb8f0198206c39b6e02d711d4736
+  sha1: sha256:3ffbd4ea50731a47b394137a16907ce7f51d35264ca44852f2905ead543fa375
+  packages:
+  - dns-publisher
+packages:
+- name: dns-publisher
+  version: 94df905403e070731befe4df4efdc422e9474fa06b7f9ed1c20a790d3f492d4c
+  fingerprint: 94df905403e070731befe4df4efdc422e9474fa06b7f9ed1c20a790d3f492d4c
+  sha1: sha256:a02eb819549e0064c1dfcd0f35e8f20141f4d4c6d2c63e98ef60cd8001b08bfe
+  dependencies:
+  - golang-1.23-linux
+- name: golang-1.23-linux
+  version: f46b6d3e8b659ee6bc5324ead33bc8e0b19a78e65afbfe2573828b55aa0def66
+  fingerprint: f46b6d3e8b659ee6bc5324ead33bc8e0b19a78e65afbfe2573828b55aa0def66
+  sha1: sha256:1fc7929ee365cd90dcb24f4e9260a5ffc732ebac54725bdf3821c62153567f43
+  dependencies: []
