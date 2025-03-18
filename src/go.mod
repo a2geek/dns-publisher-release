@@ -1,11 +1,12 @@
 module dns-publisher
 
 go 1.23.1
+
 toolchain go1.24.1
 
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
-	github.com/cloudfoundry/bosh-utils v0.0.534
+	github.com/cloudfoundry/bosh-utils v0.0.536
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.11
 	github.com/fsnotify/fsnotify v1.8.0
 	golang.org/x/crypto v0.36.0
@@ -13,9 +14,9 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/tlsconfig v0.19.0 // indirect
+	code.cloudfoundry.org/tlsconfig v0.21.0 // indirect
 	github.com/cloudfoundry/go-socks5 v0.0.0-20240831012420-2590b55236ee // indirect
-	github.com/cloudfoundry/socks5-proxy v0.2.144 // indirect
+	github.com/cloudfoundry/socks5-proxy v0.2.145 // indirect
 	github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-martini/martini v0.0.0-20170121215854-22fa46961aab // indirect
@@ -26,7 +27,7 @@ require (
 	github.com/pivotal-cf/paraphernalia v0.0.0-20180203224945-a64ae2051c20 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	golang.org/x/net v0.36.0 // indirect
+	golang.org/x/net v0.37.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 )
