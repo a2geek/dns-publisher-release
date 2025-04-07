@@ -8,8 +8,8 @@ github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523 h1
 github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523/go.mod h1:O4aGAVBGvhk4oOo9SslhhxK/SYH3wdyjZ+WOm1RBbwE=
 github.com/cloudfoundry/bosh-utils v0.0.538 h1:5J99nCN0NynRK9lUcIAXeswW4pv2bkhyLLevajjHb/s=
 github.com/cloudfoundry/bosh-utils v0.0.538/go.mod h1:ohCt2Llxkj8/sgG3zipUhpHdB2bYgwCcFTzkkRNDpo8=
-github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.11 h1:ca9zE+xkCwWr2s6DpcP/Ue4SxmhJdNhR8RW4Tqfwfbw=
-github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.11/go.mod h1:JmRWZTZEEup+5BlR+YYhzPUfJABidYEpIBNS10KjXqk=
+github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.12 h1:6ejqaobIjUY+HJWrwUW1dqiGz7s4PlG/fIDznCZwlS8=
+github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.12/go.mod h1:JmRWZTZEEup+5BlR+YYhzPUfJABidYEpIBNS10KjXqk=
 github.com/cloudfoundry/go-socks5 v0.0.0-20240831012420-2590b55236ee h1:88ruSYvCUKX2YcF2CMYVTmPGITvNdRbzaBRk2c/iMds=
 github.com/cloudfoundry/go-socks5 v0.0.0-20240831012420-2590b55236ee/go.mod h1:72EEm1oq5oXqGfu9XGtaRPWEcAFYd/P10cMNln0QhA8=
 github.com/cloudfoundry/socks5-proxy v0.2.146 h1:nAnORtNrcQ0SEAJSpI9N6MI/qaQO6hrWqp7qPV1yG24=
