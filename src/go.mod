@@ -1,12 +1,13 @@
 module dns-publisher
 
 go 1.23.1
+
 toolchain go1.24.1
 
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 	github.com/cloudfoundry/bosh-utils v0.0.538
-	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.11
+	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.12
 	github.com/fsnotify/fsnotify v1.8.0
 	golang.org/x/crypto v0.36.0
 	gopkg.in/yaml.v3 v3.0.1
