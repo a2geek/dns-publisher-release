@@ -6,6 +6,7 @@ import (
 	"dns-publisher/publishers"
 	"dns-publisher/web"
 	"flag"
+	"io"
 	"os"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
@@ -24,7 +25,9 @@ func main() {
 		loglevel = boshlog.LevelError
 	}
 
-	logger := boshlog.NewLogger(loglevel)
+	logCache := web.NewLogCache()
+	writers := io.MultiWriter(os.Stderr, logCache)
+	logger := boshlog.NewWriterLogger(loglevel, writers)
 
 	config, err := config.NewConfigFromPath(*configPathOpt)
 	if err != nil {
@@ -66,7 +69,7 @@ func main() {
 	}
 
 	if config.Web.HTTP != 0 {
-		server := web.NewWebServer(config, logger)
+		server := web.NewWebServer(config, logger, logCache)
 		go server.Serve()
 	}
 

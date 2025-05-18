@@ -10,16 +10,18 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
-func NewWebServer(config config.Config, logger boshlog.Logger) WebServer {
+func NewWebServer(config config.Config, logger boshlog.Logger, logCache *LogCache) WebServer {
 	return WebServer{
-		config: config,
-		logger: logger,
+		config:   config,
+		logger:   logger,
+		logCache: logCache,
 	}
 }
 
 type WebServer struct {
-	config config.Config
-	logger boshlog.Logger
+	config   config.Config
+	logger   boshlog.Logger
+	logCache *LogCache
 }
 
 func (s WebServer) Serve() {
