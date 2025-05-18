@@ -12,6 +12,9 @@ properties:
   log-level:
     description: "Logging level. Allowed values are: NONE, ERROR, WARN, INFO, DEBUG"
     default: "info"
+  http-port:
+    description: "HTTP port for API. Use 0 to disable."
+    default: "80"
 
   bosh-dns.trigger.type:
     description: "Trigger type. Currently supported are file-watcher and timer."

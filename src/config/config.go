@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"dns-publisher/processors"
@@ -11,6 +11,9 @@ type Config struct {
 	BoshDns      *processors.BoshDnsConfig
 	CloudFoundry *processors.CloudFoundryConfig
 	Publisher    map[string]string
+	Web          struct {
+		HTTP int
+	}
 }
 
 func NewConfigFromPath(path string) (Config, error) {

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"dns-publisher/config"
 	"dns-publisher/processors"
 	"dns-publisher/publishers"
+	"dns-publisher/web"
 	"flag"
 	"os"
 
@@ -24,7 +26,7 @@ func main() {
 
 	logger := boshlog.NewLogger(loglevel)
 
-	config, err := NewConfigFromPath(*configPathOpt)
+	config, err := config.NewConfigFromPath(*configPathOpt)
 	if err != nil {
 		logger.Error("main", "Loading config %s", err.Error())
 		os.Exit(1)
@@ -61,6 +63,10 @@ func main() {
 			os.Exit(1)
 		}
 		go processor.Run(actionChan)
+	}
+
+	if config.Web.HTTP != 0 {
+		go web.Server(config, logger)
 	}
 
 	for action := range actionChan {
