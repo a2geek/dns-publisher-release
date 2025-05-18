@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func getLogs(w http.ResponseWriter, r *http.Request) {
+func (s WebServer) getLogs(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "TODO")
 }

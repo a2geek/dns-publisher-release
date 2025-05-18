@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func getTags(w http.ResponseWriter, r *http.Request) {
+func (s WebServer) getTags(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "TODO")
 }

@@ -66,7 +66,8 @@ func main() {
 	}
 
 	if config.Web.HTTP != 0 {
-		go web.Server(config, logger)
+		server := web.NewWebServer(config, logger)
+		go server.Serve()
 	}
 
 	for action := range actionChan {

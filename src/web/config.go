@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-func getConfig(w http.ResponseWriter, r *http.Request) {
+func (s WebServer) getConfig(w http.ResponseWriter, r *http.Request) {
 	// Convert to bytes...
-	b, err := json.Marshal(configuration)
+	b, err := json.Marshal(s.config)
 	if err != nil {
 		http.NotFound(w, r)
 	}
