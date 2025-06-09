@@ -9,7 +9,7 @@ require (
 	github.com/cloudfoundry/bosh-utils v0.0.543
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.12
 	github.com/fsnotify/fsnotify v1.9.0
-	golang.org/x/crypto v0.38.0
+	golang.org/x/crypto v0.39.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
