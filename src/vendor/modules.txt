@@ -1,10 +1,10 @@
-# code.cloudfoundry.org/tlsconfig v0.31.0
+# code.cloudfoundry.org/tlsconfig v0.32.0
 ## explicit; go 1.23.0
 code.cloudfoundry.org/tlsconfig
 # github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 ## explicit; go 1.22.0
 github.com/cloudfoundry-community/gogobosh
-# github.com/cloudfoundry/bosh-utils v0.0.552
+# github.com/cloudfoundry/bosh-utils v0.0.553
 ## explicit; go 1.23.0
 github.com/cloudfoundry/bosh-utils/errors
 github.com/cloudfoundry/bosh-utils/httpclient
@@ -64,7 +64,7 @@ github.com/pmezard/go-difflib/difflib
 github.com/stretchr/testify/assert
 github.com/stretchr/testify/assert/yaml
 github.com/stretchr/testify/require
-# golang.org/x/crypto v0.40.0
+# golang.org/x/crypto v0.41.0
 ## explicit; go 1.23.0
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/chacha20
@@ -73,7 +73,7 @@ golang.org/x/crypto/internal/alias
 golang.org/x/crypto/internal/poly1305
 golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
-# golang.org/x/net v0.42.0
+# golang.org/x/net v0.43.0
 ## explicit; go 1.23.0
 golang.org/x/net/context
 golang.org/x/net/internal/socks
@@ -83,7 +83,7 @@ golang.org/x/net/proxy
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
-# golang.org/x/sys v0.34.0
+# golang.org/x/sys v0.35.0
 ## explicit; go 1.23.0
 golang.org/x/sys/cpu
 golang.org/x/sys/unix
