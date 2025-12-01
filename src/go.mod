@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 	github.com/cloudfoundry/bosh-utils v0.0.573
-	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.12
+	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.16
 	github.com/fsnotify/fsnotify v1.9.0
 	golang.org/x/crypto v0.45.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -29,6 +29,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	golang.org/x/net v0.47.0 // indirect
-	golang.org/x/oauth2 v0.28.0 // indirect
+	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 )
