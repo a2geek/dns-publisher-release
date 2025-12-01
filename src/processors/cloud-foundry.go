@@ -50,7 +50,7 @@ func (p *cloudFoundryProcessor) Act() {
 	p.logger.Debug("cloud-foundry", "checking at %s", time.Now())
 	opts := client.NewAuditEventListOptions()
 	if !p.priorRun.IsZero() {
-		opts.ListOptions.CreateAts = client.TimestampFilterList{
+		opts.ListOptions.CreatedAts = client.TimestampFilterList{
 			client.TimestampFilter{
 				Timestamp: []time.Time{p.priorRun},
 				Operator:  client.FilterModifierGreaterThan,
