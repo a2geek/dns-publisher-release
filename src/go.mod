@@ -9,7 +9,7 @@ require (
 	github.com/cloudfoundry/bosh-utils v0.0.589
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.17
 	github.com/fsnotify/fsnotify v1.9.0
-	golang.org/x/crypto v0.47.0
+	golang.org/x/crypto v0.48.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -30,5 +30,5 @@ require (
 	github.com/stretchr/testify v1.11.1 // indirect
 	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
 )
