@@ -6,7 +6,7 @@ require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 	github.com/cloudfoundry/bosh-utils v0.0.610
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-alpha.20
-	github.com/fsnotify/fsnotify v1.10.0
+	github.com/fsnotify/fsnotify v1.10.1
 	golang.org/x/crypto v0.51.0
 	gopkg.in/yaml.v3 v3.0.1
 )
