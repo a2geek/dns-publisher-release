@@ -202,6 +202,16 @@ func (o ObjectJSONGenerator) FeatureFlag() *JSONResource {
 	return o.renderTemplate(r, "feature_flag.json")
 }
 
+func (o ObjectJSONGenerator) Info() *JSONResource {
+	r := &JSONResource{}
+	return o.renderTemplate(r, "info.json")
+}
+
+func (o ObjectJSONGenerator) InfoUsageSummary() *JSONResource {
+	r := &JSONResource{}
+	return o.renderTemplate(r, "info_usage_summary.json")
+}
+
 func (o ObjectJSONGenerator) IsolationSegment() *JSONResource {
 	r := &JSONResource{
 		GUID: RandomGUID(),
@@ -333,6 +343,13 @@ func (o ObjectJSONGenerator) RouteDestinationWithLinks() *JSONResource {
 	return o.renderTemplate(r, "route_destination_with_links.json")
 }
 
+func (o ObjectJSONGenerator) RoutePolicy() *JSONResource {
+	r := &JSONResource{
+		GUID: RandomGUID(),
+	}
+	return o.renderTemplate(r, "route_policy.json")
+}
+
 func (o ObjectJSONGenerator) ServiceBroker() *JSONResource {
 	r := &JSONResource{
 		GUID: RandomGUID(),
@@ -437,6 +454,13 @@ func (o ObjectJSONGenerator) Space() *JSONResource {
 		Name: RandomName(),
 	}
 	return o.renderTemplate(r, "space.json")
+}
+
+func (o ObjectJSONGenerator) SpaceUsageSummary() *JSONResource {
+	r := &JSONResource{
+		GUID: RandomGUID(),
+	}
+	return o.renderTemplate(r, "space_usage_summary.json")
 }
 
 func (o ObjectJSONGenerator) SpaceQuota() *JSONResource {

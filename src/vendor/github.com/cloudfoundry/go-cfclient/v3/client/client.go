@@ -33,6 +33,7 @@ type Client struct {
 	Droplets                  *DropletClient
 	EnvVarGroups              *EnvVarGroupClient
 	FeatureFlags              *FeatureFlagClient
+	Info                      *InfoClient
 	IsolationSegments         *IsolationSegmentClient
 	Jobs                      *JobClient
 	Manifests                 *ManifestClient
@@ -45,6 +46,7 @@ type Client struct {
 	Roles                     *RoleClient
 	Root                      *RootClient
 	Routes                    *RouteClient
+	RoutePolicies             *RoutePolicyClient
 	SecurityGroups            *SecurityGroupClient
 	ServiceBrokers            *ServiceBrokerClient
 	ServiceCredentialBindings *ServiceCredentialBindingClient
@@ -96,6 +98,7 @@ func New(config *config.Config) (*Client, error) {
 	client.Droplets = (*DropletClient)(&client.common)
 	client.EnvVarGroups = (*EnvVarGroupClient)(&client.common)
 	client.FeatureFlags = (*FeatureFlagClient)(&client.common)
+	client.Info = (*InfoClient)(&client.common)
 	client.IsolationSegments = (*IsolationSegmentClient)(&client.common)
 	client.Jobs = (*JobClient)(&client.common)
 	client.Manifests = (*ManifestClient)(&client.common)
@@ -108,6 +111,7 @@ func New(config *config.Config) (*Client, error) {
 	client.Roles = (*RoleClient)(&client.common)
 	client.Root = (*RootClient)(&client.common)
 	client.Routes = (*RouteClient)(&client.common)
+	client.RoutePolicies = (*RoutePolicyClient)(&client.common)
 	client.SecurityGroups = (*SecurityGroupClient)(&client.common)
 	client.ServiceBrokers = (*ServiceBrokerClient)(&client.common)
 	client.ServiceCredentialBindings = (*ServiceCredentialBindingClient)(&client.common)
