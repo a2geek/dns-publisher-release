@@ -8,8 +8,8 @@ github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAw
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523 h1:U84s/RbARK/c63YWszVykr7LrJo5Q5ubkKH5y5u4DYY=
 github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523/go.mod h1:O4aGAVBGvhk4oOo9SslhhxK/SYH3wdyjZ+WOm1RBbwE=
-github.com/cloudfoundry/bosh-utils v0.0.630 h1:4rI6FmbrHHRrIxf2451ggxP9AaGinfaLyRmkfSciJic=
-github.com/cloudfoundry/bosh-utils v0.0.630/go.mod h1:1/jbVG/VPXcTE8mlJ7QCTYqJBPFzxqv9ivSBTrE/0rM=
+github.com/cloudfoundry/bosh-utils v0.0.631 h1:fopVJiPPzLzdyZLunnQ2TRhqI9hz1Xs5u94y+tbmTp4=
+github.com/cloudfoundry/bosh-utils v0.0.631/go.mod h1:1/jbVG/VPXcTE8mlJ7QCTYqJBPFzxqv9ivSBTrE/0rM=
 github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1 h1:y0f4/xA3fn8WlUnA4dPpoRbhhL/65ktG8uHZe8aF4ZE=
 github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1/go.mod h1:cwg8bywOst/2c5huQgBIbA5gcI4g8DLov00cJaDaFy0=
 github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851 h1:oy59UYcspoP44ggE8DM3kjxl1+sTFd802bbZlBBhBMk=
