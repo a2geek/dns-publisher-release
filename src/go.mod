@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
-	github.com/cloudfoundry/bosh-utils v0.0.642
+	github.com/cloudfoundry/bosh-utils v0.0.645
 	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1
 	github.com/fsnotify/fsnotify v1.10.1
 	golang.org/x/crypto v0.55.0
@@ -22,7 +22,8 @@ require (
 	github.com/martini-contrib/render v0.0.0-20150707142108-ec18f8345a11 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
-	github.com/stretchr/testify v1.12.0 // indirect
+	github.com/stretchr/testify v1.12.1 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect

@@ -8,8 +8,8 @@ github.com/Masterminds/semver/v3 v3.5.0 h1:kQceYJfbupGfZOKZQg0kou0DgAKhzDg2NZPAw
 github.com/Masterminds/semver/v3 v3.5.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523 h1:U84s/RbARK/c63YWszVykr7LrJo5Q5ubkKH5y5u4DYY=
 github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523/go.mod h1:O4aGAVBGvhk4oOo9SslhhxK/SYH3wdyjZ+WOm1RBbwE=
-github.com/cloudfoundry/bosh-utils v0.0.642 h1:vsd+dhR953cq0eKZRn7Y2GZzvKsdF6Z2orqnTQsfS2M=
-github.com/cloudfoundry/bosh-utils v0.0.642/go.mod h1:0psBMo1juz6L4EzcDlVCJwp709jIFVtJuaaHSdp8O9E=
+github.com/cloudfoundry/bosh-utils v0.0.645 h1:wZw5ecGzqfTcec4oQJ0YJcvwlavRkiiTdSdZ1cMQiD0=
+github.com/cloudfoundry/bosh-utils v0.0.645/go.mod h1:8hZNSg82/00YCma6wwAKQK+7erYu54i+OUuaYoP6Gf8=
 github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1 h1:y0f4/xA3fn8WlUnA4dPpoRbhhL/65ktG8uHZe8aF4ZE=
 github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1/go.mod h1:cwg8bywOst/2c5huQgBIbA5gcI4g8DLov00cJaDaFy0=
 github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851 h1:oy59UYcspoP44ggE8DM3kjxl1+sTFd802bbZlBBhBMk=
@@ -64,12 +64,12 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/objx v0.5.3 h1:jmXUvGomnU1o3W/V5h2VEradbpJDwGrzugQQvL0POH4=
 github.com/stretchr/objx v0.5.3/go.mod h1:rDQraq+vQZU7Fde9LOZLr8Tax6zZvy4kuNKF+QYS+U0=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/stretchr/testify v1.12.0 h1:K6Mr6jO9JICuend/5xzTM03ydSV3vdNRYAdPSukj8uI=
-github.com/stretchr/testify v1.12.0/go.mod h1:bOYBZb5qJ00vPzWfIqBUZPaxK8jWiXc6d3ErP4Ca9Gw=
+github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
+github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
 go.step.sm/crypto v0.77.9 h1:gC/z6/XBlLpq9suHQxbcDS32QSGggpisIZVJr65LDJk=
 go.step.sm/crypto v0.77.9/go.mod h1:/5BzDlwYA7C1q6h9OIv0+oR8lbQvK+rTGeBmLLl7hIo=
-go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
-go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
+go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
+go.yaml.in/yaml/v3 v3.0.5/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
 golang.org/x/crypto v0.55.0 h1:+KWHjbgOaAQ66dh/YlkZKHlz9ZUlq61AFirAR9ntP8M=
 golang.org/x/crypto v0.55.0/go.mod h1:uq0V9dE/fzQuJtbnL+2EhWOE63vo164FY8xqEnV9xis=
 golang.org/x/mod v0.40.0 h1:hUv+3cXcdRHz08UmSiOob7sadHig73uo5bkXxQ/tvUs=
