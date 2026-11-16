@@ -5,7 +5,7 @@ go 1.26.10
 require (
 	github.com/cloudfoundry-community/gogobosh v0.0.0-20241029224830-82866ed2d523
 	github.com/cloudfoundry/bosh-utils v0.0.671
-	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.1
+	github.com/cloudfoundry/go-cfclient/v3 v3.0.0-beta.2
 	github.com/fsnotify/fsnotify v1.10.1
 	golang.org/x/crypto v0.58.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -25,6 +25,6 @@ require (
 	github.com/stretchr/testify v1.12.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.62.0 // indirect
-	golang.org/x/oauth2 v0.30.0 // indirect
+	golang.org/x/oauth2 v0.38.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 )
